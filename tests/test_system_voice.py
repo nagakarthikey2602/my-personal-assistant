@@ -34,8 +34,11 @@ def test_system_status_is_read_only_and_verified(tool) -> None:
 
     battery = call("system.battery")
     assert battery.status == "ok", battery.message
-    assert 0 <= battery.data["percent"] <= 100
-    assert isinstance(battery.data["plugged_in"], bool)
+    if "percent" not in battery.data:
+        assert "No battery" in battery.message
+    else:
+        assert 0 <= battery.data["percent"] <= 100
+        assert isinstance(battery.data["plugged_in"], bool)
 
     offline = call("system.offline_status")
     assert offline.status == "ok", offline.message
