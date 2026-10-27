@@ -241,7 +241,7 @@ Measured on 2026-10-27:
 
 ```text
 pytest tests -q
-109 passed, 1 skipped in 41.84s
+110 passed, 1 skipped in 39.23s
 ```
 
 The skip is symlink creation, which this Windows session did not permit; path

@@ -16,8 +16,9 @@ validated.
 
 | Area | Result | Evidence |
 |---|---|---|
-| Automated tests | **PASS** | 109 passed, 1 skipped |
+| Automated tests | **PASS** | 110 passed, 1 skipped |
 | Built-in self-test | **PASS** | 15/15 checks |
+| Formant TTS code path | **PASS** | NameError found during install verification and fixed; regression test and direct `SPEAK_OK` probe |
 | Diagnostics | **PASS with 1 warning** | Healthy; 0 errors; missing user voice templates |
 | Offline guard check | **PASS for the Python process** | Strict mode; external blocked; loopback works |
 | Setup script | **PASS** | Existing venv reused; runtime requirements satisfied; compile check passed |
@@ -41,16 +42,16 @@ powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
 Recorded output:
 
 ```text
-.................s...................................................... [ 65%]
-......................................                                   [100%]
+.................s...................................................... [ 64%]
+.......................................                                  [100%]
 =========================== short test summary info ===========================
 SKIPPED [1] tests\test_config_paths.py:132: Creating symbolic links is not permitted in this Windows session.
-109 passed, 1 skipped in 41.84s
+110 passed, 1 skipped in 39.23s
 ```
 
 The same suite run directly with
-`.venv\Scripts\python.exe -m pytest tests -q` also passed with 109 passed and 1
-skipped (37.82s). The skip is an environment limitation of this Windows session,
+`.venv\Scripts\python.exe -m pytest tests -q` also passed with 110 passed and 1
+skipped (36.03s). The skip is an environment limitation of this Windows session,
 not a disabled security test: Windows did not permit creating a symbolic link for
 the traversal test. The path policy still resolves links defensively.
 
@@ -61,13 +62,24 @@ withdraws/closes it.
 
 ### Covered test areas
 
-The 110 collected tests include configuration/path policy, offline blocking,
+The 111 collected tests include configuration/path policy, offline blocking,
 JSON-schema validation, permission/approval behavior, kill switch, cancellation,
 timeouts, task state transitions, memory storage/export/retention/disable,
 filesystem operations and undo, ZIP safety (zip-slip, entry count, expansion),
 document extraction, Windows read-only status tools, app/typing risk handling,
 browser URL policy, speech policy/device reporting, CLI subprocesses, recovery
 journal behavior, and a minimal Tk window lifecycle.
+
+### Post-install TTS correction
+
+During installation verification, the default formant speech output failed with
+`NameError: name 'phone' is not defined` in `speech/tts.py`. The code referenced
+`phone` instead of the computed `phones` value. This was a real functional defect,
+not a display issue: every spoken response would have been silent. It was fixed,
+a no-playback regression test was added to `tests/test_system_voice.py`, and a
+direct synthesis/playback probe then returned `SPEAK_OK`. The full suite was
+re-run with 110 passed and 1 skipped. Perceptual quality remains unvalidated;
+only the code path and local playback call were exercised.
 
 ## Built-in self-test
 

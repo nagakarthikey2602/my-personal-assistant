@@ -89,3 +89,16 @@ def test_voice_status_capabilities_and_disabled_speech(tool) -> None:
     spoken = call("voice.speak", text="This must not reach a speaker.")
     assert spoken.status == "error"
     assert "disabled" in spoken.message.lower()
+
+
+def test_formant_synthesizer_builds_speech_without_playback() -> None:
+    from personal_assistant.speech.tts import FormantSynthesizer, text_to_phonemes
+
+    tokens = text_to_phonemes("hello 123")
+    assert "HH" in tokens
+    assert "PAUSE_WORD" in tokens
+
+    samples = FormantSynthesizer().synthesize("hello world")
+    assert samples.size > 0
+    assert samples.dtype.name == "float32"
+    assert float(abs(samples).max()) <= 1.0

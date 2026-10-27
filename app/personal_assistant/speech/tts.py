@@ -208,7 +208,7 @@ def text_to_phonemes(text: str) -> list[str]:
             else:
                 word = " ".join(_DIGITS.get(digit, digit) for digit in word)
         phones = _spell_word(word)
-        tokens.extend(phone.split())
+        tokens.extend(phones.split())
         tokens.append("PAUSE_WORD")
     return tokens
 
