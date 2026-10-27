@@ -1,0 +1,13 @@
+# Runtime dependencies. Versions are pinned to the set that was installed and
+# exercised during development on Python 3.14 / Windows 11. See requirements.lock.txt
+# for the exact transitive resolution produced by pip.
+numpy>=2.3,<3
+psutil>=7,<8
+PyYAML>=6,<7
+pypdf>=6,<8
+Pillow>=11,<14
+
+# The desktop UI uses Tkinter and audio capture uses WinMM both from the Python
+# standard library. This is deliberate: on the inspected Python 3.14 installation,
+# PySide6 and sounddevice/cffi had no compatible wheels. See docs/ARCHITECTURE.md.
+

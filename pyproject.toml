@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-personal-assistant"
+version = "0.1.0"
+description = "Privacy-first, offline Windows personal assistant with a deterministic tool registry and user-trainable components."
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = { text = "MIT" }
+authors = [{ name = "Local Assistant Project" }]
+dependencies = [
+  "numpy>=2.3,<3",
+  "psutil>=7,<8",
+  "PyYAML>=6,<7",
+  "pypdf>=6,<8",
+  "Pillow>=11,<14",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "pyinstaller>=6.15,<7",
+]
+
+[project.scripts]
+personal-assistant = "personal_assistant.main:main"
+
+[project.urls]
+Documentation = "https://example.invalid/local-only-documentation"
+
+[tool.setuptools.packages.find]
+where = ["app"]
+
+[tool.setuptools.package-data]
+personal_assistant = ["memory/*.sql", "speech/*.ps1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["app"]
+addopts = "-ra"
+markers = [
+  "integration: exercises multiple components",
+  "security: security-focused checks",
+  "offline: verifies offline behaviour",
+  "ui: creates a real Tk window and closes it immediately",
+  "windows: interacts with the local Windows session and is skipped elsewhere",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+]
+
+[tool.pyinstaller]
+# See packaging/personal_assistant.spec for the real build configuration.

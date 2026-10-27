@@ -1,0 +1,157 @@
+# Local Personal Assistant -- example configuration.
+# Copy to config/config.yaml. The app also runs with built-in defaults.
+# No passwords or API keys belong in this file. Runtime data stays local.
+
+app:
+  name: "Local Personal Assistant"
+  # strict installs an in-process network guard that blocks non-loopback sockets.
+  offline_mode: strict
+  # Risk levels: 1 read-only, 2 reversible, 3 sensitive, 4 privileged.
+  # Read-only and reversible actions within the allowlisted roots run automatically.
+  auto_approve_max_risk: 2
+  confirm_level_3: true
+  confirm_level_4: true
+  max_task_seconds: 600
+  max_steps: 40
+  log_level: INFO
+  ui:
+    spoken_responses: true
+    voice_enabled: true
+    start_minimised: false
+
+paths:
+  # The sandbox is the only writable root by default. Add personal folders only
+  # after reviewing SECURITY.md. Use <HOME> and <APP_ROOT> placeholders.
+  write_roots:
+    - "<APP_ROOT>\\sandbox"
+  read_roots:
+    - "<APP_ROOT>"
+    - "<HOME>\\Downloads"
+    - "<HOME>\\Documents"
+    - "<HOME>\\Desktop"
+  # Internal runtime locations. These are blocked from general file tools unless
+  # allow_protected_read is explicitly enabled. Keep them local.
+  data: "<APP_ROOT>\\data"
+  logs: "<APP_ROOT>\\logs"
+  models: "<APP_ROOT>\\models"
+  training_data: "<APP_ROOT>\\training_data"
+  quarantine: "<APP_ROOT>\\data\\quarantine"
+  backups: "<APP_ROOT>\\data\\backups"
+  database: "<APP_ROOT>\\data\\assistant.db"
+  recovery_journal: "<APP_ROOT>\\data\\recovery\\journal.json"
+  temp: "<APP_ROOT>\\data\\temp"
+  deny_names:
+    - "*.pfx"
+    - "*.p12"
+    - "id_rsa"
+    - "id_ed25519"
+    - "*.kdbx"
+    - ".env"
+    - "NTUSER.DAT"
+    - "Login Data"
+    - "Cookies"
+  deny_path_fragments:
+    - "\\.ssh\\"
+    - "\\.gnupg\\"
+    - "\\.aws\\"
+    - "\\AppData\\Roaming\\Microsoft\\Credentials\\"
+    - "\\AppData\\Local\\Microsoft\\Credentials\\"
+    - "\\Windows\\System32\\"
+    - "\\Windows\\SysWOW64\\"
+  protected_roots:
+    - "<APP_ROOT>\\data"
+    - "<APP_ROOT>\\logs"
+    - "<APP_ROOT>\\config"
+    - "<APP_ROOT>\\training_data"
+    - "<APP_ROOT>\\models"
+  # Read-only exception for inspecting protected files. It never grants write
+  # access, even if a protected path is later added to a write root.
+  allow_protected_read: false
+  allow_dangerous_roots: false
+
+files:
+  max_read_bytes: 2000000
+  max_write_bytes: 5000000
+  max_search_results: 200
+  max_search_seconds: 20
+  max_scan_files: 20000
+  max_zip_entries: 2000
+  max_zip_uncompressed_bytes: 500000000
+  max_zip_ratio: 200
+  allow_overwrite: false
+  quarantine_keep_days: 30
+
+memory:
+  enabled: true
+  store_commands: true
+  store_outputs: false
+  retention_days: 90
+  max_history: 1000
+
+permissions:
+  approval_timeout_seconds: 120
+  audit_log: "<APP_ROOT>\\logs\\audit.jsonl"
+  audit_max_megabytes: 10
+  # "*" allows every registered tool, subject to risk approval. To reduce attack
+  # surface, replace it with an explicit list; denied_tools always wins.
+  allowed_tools: ["*"]
+  denied_tools: []
+
+tools:
+  terminal_enabled: true
+  terminal_timeout_seconds: 120
+  terminal_max_output_bytes: 200000
+  # These exact commands are the only terminal actions dev.run can execute.
+  # Arguments, shell operators, and arbitrary programs are rejected.
+  allowed_commands:
+    - ["python", "-m", "pytest", "-q"]
+    - ["python", "-m", "unittest", "discover", "-v"]
+    - ["python", "-m", "compileall", "-q", "."]
+    - ["git", "status", "--short"]
+    - ["git", "log", "-n", "20", "--oneline"]
+    - ["git", "diff", "--stat"]
+  # Network browser opening is off. Strict offline mode blocks external sockets
+  # regardless of this setting. Local file:// pages are still permitted.
+  browser_network_enabled: false
+  browser_allowed_schemes: ["https", "http", "file"]
+  screenshot_enabled: true
+  clipboard_enabled: true
+  ui_automation_enabled: true
+
+intelligence:
+  enable_model: true
+  intent_model_path: "<APP_ROOT>\\models\\intent_model.json"
+  min_confidence: 0.55
+  min_margin: 0.15
+
+speech:
+  # "template" is a from-scratch closed-vocabulary recognizer using user-recorded
+  # word templates (MFCC + DTW). It has no pretrained weights.
+  asr_engine: template
+  # "formant" is a deterministic, rule-based synthesizer with no learned model.
+  # "sapi" uses Microsoft-pretrained voices and is disabled by policy. See MODEL_POLICY.md.
+  tts_engine: formant
+  allow_os_pretrained_tts: false
+  input_device: null
+  output_device: null
+  sample_rate: 16000
+  channels: 1
+  push_to_talk_seconds: 8
+  vad_energy_threshold: 0.008
+  template_threshold: 0.72
+  template_margin: 0.08
+  templates_dir: "<APP_ROOT>\\models\\speech_templates"
+  wake_word_enabled: false
+  wake_word: "assistant"
+  max_speech_seconds: 15
+
+diagnostics:
+  test_directory: "<APP_ROOT>\\sandbox"
+
+integration:
+  # Reserved for the future, authenticated local Android bridge. No server is
+  # started while this is false. See docs/ANDROID_INTEGRATION.md.
+  android_enabled: false
+  bind_host: "127.0.0.1"
+  bind_port: 8765
+  require_pairing_token: true

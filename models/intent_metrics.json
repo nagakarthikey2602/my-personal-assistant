@@ -1,0 +1,402 @@
+{
+  "trained_at": "2026-10-27T11:32:41Z",
+  "model_path": "C:\\my personal assistant\\models\\intent_model.json",
+  "dataset": "C:\\my personal assistant\\training_data\\generated",
+  "training": {
+    "examples": 518,
+    "labels": 52,
+    "features": 2688,
+    "epochs_run": 600,
+    "final_loss": 1.77293668,
+    "train_accuracy": 0.982625,
+    "training_seconds": 12.406,
+    "user_examples_included": 0
+  },
+  "validation": {
+    "accuracy": 0.872881,
+    "examples": 118,
+    "correct": 103,
+    "mean_confidence": 0.3315,
+    "confusion": {
+      "apps.capabilities": {
+        "apps.capabilities": 1
+      },
+      "apps.close": {
+        "apps.close": 8
+      },
+      "apps.focus_window": {
+        "apps.focus_window": 4
+      },
+      "apps.launch": {
+        "apps.launch": 5
+      },
+      "apps.list_installed": {
+        "apps.list_installed": 4
+      },
+      "apps.list_windows": {
+        "apps.list_windows": 2
+      },
+      "apps.type_text": {
+        "apps.type_text": 1
+      },
+      "browser.open": {
+        "browser.open": 1
+      },
+      "desktop.clipboard_get": {
+        "desktop.clipboard_get": 1
+      },
+      "desktop.clipboard_set": {
+        "desktop.clipboard_get": 1,
+        "desktop.clipboard_set": 3
+      },
+      "dev.analyze_log": {
+        "dev.analyze_log": 2
+      },
+      "dev.run": {
+        "apps.launch": 2
+      },
+      "dev.status": {
+        "dev.status": 1
+      },
+      "fs.create_folder": {
+        "fs.create_folder": 5
+      },
+      "fs.duplicates": {
+        "fs.duplicates": 1
+      },
+      "fs.extract": {
+        "fs.extract": 1
+      },
+      "fs.inventory": {
+        "fs.inventory": 1
+      },
+      "fs.list": {
+        "windows.open_folder": 1
+      },
+      "fs.move": {
+        "fs.move": 5,
+        "fs.quarantine_delete": 1
+      },
+      "fs.quarantine_delete": {
+        "fs.quarantine_delete": 4
+      },
+      "fs.read": {
+        "fs.read": 6
+      },
+      "fs.search": {
+        "fs.search": 4
+      },
+      "fs.write": {
+        "fs.write": 7
+      },
+      "fs.zip": {
+        "fs.extract": 2,
+        "fs.create_folder": 2,
+        "fs.zip": 1
+      },
+      "memory.add_example": {
+        "memory.add_example": 2,
+        "apps.launch": 1
+      },
+      "memory.export": {
+        "memory.export": 1
+      },
+      "memory.forget": {
+        "memory.forget": 2
+      },
+      "memory.list": {
+        "memory.list": 1
+      },
+      "memory.remember": {
+        "memory.remember": 4
+      },
+      "memory.set_enabled": {
+        "memory.set_enabled": 1
+      },
+      "memory.status": {
+        "memory.status": 1
+      },
+      "system.audio_devices": {
+        "system.audio_devices": 1,
+        "dev.status": 1
+      },
+      "system.battery": {
+        "system.battery": 2,
+        "dev.status": 2
+      },
+      "system.info": {
+        "system.info": 1
+      },
+      "system.media_control": {
+        "system.media_control": 1
+      },
+      "system.top_processes": {
+        "memory.status": 1
+      },
+      "voice.capabilities": {
+        "voice.capabilities": 2
+      },
+      "voice.list_devices": {
+        "voice.list_devices": 2
+      },
+      "voice.speak": {
+        "voice.speak": 2
+      },
+      "voice.status": {
+        "voice.status": 3
+      },
+      "windows.bluetooth_status": {
+        "windows.bluetooth_status": 2
+      },
+      "windows.display_info": {
+        "windows.display_info": 1
+      },
+      "windows.network_status": {
+        "windows.network_status": 1,
+        "dev.status": 1
+      },
+      "windows.open_folder": {
+        "windows.open_folder": 2
+      },
+      "windows.open_settings": {
+        "windows.open_settings": 1
+      },
+      "windows.power_status": {
+        "windows.power_status": 2
+      }
+    },
+    "per_class": {
+      "apps.capabilities": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "apps.close": {
+        "support": 8,
+        "correct": 8,
+        "recall": 1.0
+      },
+      "apps.focus_window": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "apps.launch": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "apps.list_installed": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "apps.list_windows": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "apps.type_text": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "browser.open": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "desktop.clipboard_get": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "desktop.clipboard_set": {
+        "support": 4,
+        "correct": 3,
+        "recall": 0.75
+      },
+      "dev.analyze_log": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "dev.run": {
+        "support": 2,
+        "correct": 0,
+        "recall": 0.0
+      },
+      "dev.status": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.create_folder": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "fs.duplicates": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.extract": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.inventory": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.list": {
+        "support": 1,
+        "correct": 0,
+        "recall": 0.0
+      },
+      "fs.move": {
+        "support": 6,
+        "correct": 5,
+        "recall": 0.8333
+      },
+      "fs.quarantine_delete": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "fs.read": {
+        "support": 6,
+        "correct": 6,
+        "recall": 1.0
+      },
+      "fs.search": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "fs.write": {
+        "support": 7,
+        "correct": 7,
+        "recall": 1.0
+      },
+      "fs.zip": {
+        "support": 5,
+        "correct": 1,
+        "recall": 0.2
+      },
+      "memory.add_example": {
+        "support": 3,
+        "correct": 2,
+        "recall": 0.6667
+      },
+      "memory.export": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "memory.forget": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "memory.list": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "memory.remember": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "memory.set_enabled": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "memory.status": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "system.audio_devices": {
+        "support": 2,
+        "correct": 1,
+        "recall": 0.5
+      },
+      "system.battery": {
+        "support": 4,
+        "correct": 2,
+        "recall": 0.5
+      },
+      "system.info": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "system.media_control": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "system.top_processes": {
+        "support": 1,
+        "correct": 0,
+        "recall": 0.0
+      },
+      "voice.capabilities": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "voice.list_devices": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "voice.speak": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "voice.status": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "windows.bluetooth_status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.display_info": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "windows.network_status": {
+        "support": 2,
+        "correct": 1,
+        "recall": 0.5
+      },
+      "windows.open_folder": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.open_settings": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "windows.power_status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      }
+    }
+  },
+  "policy": "Local, from-scratch classifier. Label suggestion only; no action execution."
+}

@@ -1,0 +1,566 @@
+{
+  "model_path": "C:\\my personal assistant\\models\\intent_model.json",
+  "test_set": "C:\\my personal assistant\\training_data\\generated\\test.jsonl",
+  "dataset_provenance": "Authored templates and deterministic slot expansion; synthetic held-out split.",
+  "caveat": "This score measures consistency with authored templates. It is not a measure of general language understanding or real-world task accuracy.",
+  "raw": {
+    "accuracy": 0.945736,
+    "examples": 129,
+    "correct": 122,
+    "mean_confidence": 0.3798,
+    "confusion": {
+      "apps.close": {
+        "apps.close": 4
+      },
+      "apps.focus_window": {
+        "apps.focus_window": 4
+      },
+      "apps.launch": {
+        "apps.launch": 5
+      },
+      "apps.list_installed": {
+        "apps.list_installed": 1
+      },
+      "apps.list_windows": {
+        "apps.list_windows": 1
+      },
+      "apps.type_text": {
+        "apps.type_text": 3
+      },
+      "browser.open": {
+        "browser.open": 5
+      },
+      "desktop.clipboard_get": {
+        "desktop.clipboard_get": 2
+      },
+      "desktop.clipboard_set": {
+        "desktop.clipboard_set": 1
+      },
+      "desktop.screenshot": {
+        "desktop.screenshot": 2
+      },
+      "dev.analyze_log": {
+        "dev.analyze_log": 4
+      },
+      "dev.status": {
+        "dev.status": 1
+      },
+      "fs.copy": {
+        "fs.copy": 5
+      },
+      "fs.create_folder": {
+        "fs.create_folder": 2
+      },
+      "fs.duplicates": {
+        "fs.search": 2,
+        "fs.duplicates": 1
+      },
+      "fs.extract": {
+        "fs.extract": 2
+      },
+      "fs.inventory": {
+        "fs.inventory": 1
+      },
+      "fs.list": {
+        "fs.read": 1,
+        "fs.search": 1
+      },
+      "fs.quarantine_delete": {
+        "fs.quarantine_delete": 3,
+        "fs.write": 1
+      },
+      "fs.read": {
+        "fs.read": 5
+      },
+      "fs.rename": {
+        "fs.rename": 3
+      },
+      "fs.search": {
+        "fs.search": 4
+      },
+      "fs.undo_last": {
+        "fs.undo_last": 1
+      },
+      "fs.write": {
+        "fs.write": 6
+      },
+      "fs.zip": {
+        "fs.zip": 2
+      },
+      "memory.add_example": {
+        "memory.add_example": 2
+      },
+      "memory.export": {
+        "memory.export": 4,
+        "fs.copy": 2
+      },
+      "memory.forget": {
+        "memory.forget": 2
+      },
+      "memory.remember": {
+        "memory.remember": 5
+      },
+      "memory.set_enabled": {
+        "memory.set_enabled": 1
+      },
+      "memory.status": {
+        "memory.status": 1
+      },
+      "system.audio_devices": {
+        "system.audio_devices": 3
+      },
+      "system.battery": {
+        "system.battery": 1
+      },
+      "system.info": {
+        "system.info": 3
+      },
+      "system.media_control": {
+        "system.media_control": 3
+      },
+      "system.offline_status": {
+        "system.offline_status": 2
+      },
+      "system.top_processes": {
+        "system.top_processes": 1
+      },
+      "voice.capabilities": {
+        "voice.capabilities": 1
+      },
+      "voice.list_devices": {
+        "voice.list_devices": 1
+      },
+      "voice.speak": {
+        "voice.speak": 6
+      },
+      "voice.status": {
+        "voice.status": 2
+      },
+      "windows.bluetooth_status": {
+        "windows.bluetooth_status": 3
+      },
+      "windows.display_info": {
+        "windows.display_info": 2
+      },
+      "windows.network_status": {
+        "windows.network_status": 2
+      },
+      "windows.open_folder": {
+        "windows.open_folder": 2
+      },
+      "windows.open_settings": {
+        "windows.open_settings": 2
+      },
+      "windows.power_status": {
+        "windows.power_status": 2
+      },
+      "windows.startup_list": {
+        "windows.startup_list": 3
+      }
+    },
+    "per_class": {
+      "apps.close": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "apps.focus_window": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "apps.launch": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "apps.list_installed": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "apps.list_windows": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "apps.type_text": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "browser.open": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "desktop.clipboard_get": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "desktop.clipboard_set": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "desktop.screenshot": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "dev.analyze_log": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "dev.status": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.copy": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "fs.create_folder": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "fs.duplicates": {
+        "support": 3,
+        "correct": 1,
+        "recall": 0.3333
+      },
+      "fs.extract": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "fs.inventory": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.list": {
+        "support": 2,
+        "correct": 0,
+        "recall": 0.0
+      },
+      "fs.quarantine_delete": {
+        "support": 4,
+        "correct": 3,
+        "recall": 0.75
+      },
+      "fs.read": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "fs.rename": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "fs.search": {
+        "support": 4,
+        "correct": 4,
+        "recall": 1.0
+      },
+      "fs.undo_last": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "fs.write": {
+        "support": 6,
+        "correct": 6,
+        "recall": 1.0
+      },
+      "fs.zip": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "memory.add_example": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "memory.export": {
+        "support": 6,
+        "correct": 4,
+        "recall": 0.6667
+      },
+      "memory.forget": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "memory.remember": {
+        "support": 5,
+        "correct": 5,
+        "recall": 1.0
+      },
+      "memory.set_enabled": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "memory.status": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "system.audio_devices": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "system.battery": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "system.info": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "system.media_control": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "system.offline_status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "system.top_processes": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "voice.capabilities": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "voice.list_devices": {
+        "support": 1,
+        "correct": 1,
+        "recall": 1.0
+      },
+      "voice.speak": {
+        "support": 6,
+        "correct": 6,
+        "recall": 1.0
+      },
+      "voice.status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.bluetooth_status": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      },
+      "windows.display_info": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.network_status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.open_folder": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.open_settings": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.power_status": {
+        "support": 2,
+        "correct": 2,
+        "recall": 1.0
+      },
+      "windows.startup_list": {
+        "support": 3,
+        "correct": 3,
+        "recall": 1.0
+      }
+    }
+  },
+  "gates": {
+    "confidence": 0.55,
+    "margin": 0.15,
+    "accepted": 26,
+    "coverage": 0.20155,
+    "accepted_accuracy": 1.0
+  },
+  "largest_errors": [
+    {
+      "expected": "fs.duplicates",
+      "predicted": "fs.search",
+      "count": 2
+    },
+    {
+      "expected": "memory.export",
+      "predicted": "fs.copy",
+      "count": 2
+    },
+    {
+      "expected": "fs.list",
+      "predicted": "fs.read",
+      "count": 1
+    },
+    {
+      "expected": "fs.list",
+      "predicted": "fs.search",
+      "count": 1
+    },
+    {
+      "expected": "fs.quarantine_delete",
+      "predicted": "fs.write",
+      "count": 1
+    }
+  ],
+  "metadata": {
+    "model_type": "pa-softmax-bow-v1",
+    "trained_at": "2026-10-27T11:32:41Z",
+    "training_examples": 518,
+    "labels": [
+      "apps.capabilities",
+      "apps.close",
+      "apps.focus_window",
+      "apps.launch",
+      "apps.list_installed",
+      "apps.list_windows",
+      "apps.type_text",
+      "browser.open",
+      "desktop.clipboard_get",
+      "desktop.clipboard_set",
+      "desktop.screenshot",
+      "dev.analyze_log",
+      "dev.run",
+      "dev.status",
+      "fs.copy",
+      "fs.create_folder",
+      "fs.duplicates",
+      "fs.extract",
+      "fs.inventory",
+      "fs.list",
+      "fs.move",
+      "fs.quarantine_delete",
+      "fs.read",
+      "fs.rename",
+      "fs.search",
+      "fs.undo_last",
+      "fs.write",
+      "fs.zip",
+      "memory.add_example",
+      "memory.export",
+      "memory.forget",
+      "memory.list",
+      "memory.remember",
+      "memory.set_enabled",
+      "memory.status",
+      "system.audio_devices",
+      "system.battery",
+      "system.info",
+      "system.media_control",
+      "system.offline_status",
+      "system.top_processes",
+      "voice.capabilities",
+      "voice.list_devices",
+      "voice.speak",
+      "voice.status",
+      "windows.bluetooth_status",
+      "windows.display_info",
+      "windows.network_status",
+      "windows.open_folder",
+      "windows.open_settings",
+      "windows.power_status",
+      "windows.startup_list"
+    ],
+    "features": 2688,
+    "epochs_requested": 600,
+    "epochs_run": 600,
+    "final_loss": 1.77293668,
+    "train_accuracy": 0.982625,
+    "data_sha256": "a0a4a908dd65bb135dbf1972530d8c7e6c52466b6836d916c3aab307209278d3",
+    "algorithm": "multinomial logistic regression (softmax), full-batch Adam, L2",
+    "pretrained": false,
+    "provenance": "Examples generated from templates in this repository and/or user-approved examples.",
+    "limitations": "Small closed-label intent classifier; not a general language model.",
+    "training_seconds": 12.406,
+    "dataset": "C:\\my personal assistant\\training_data\\generated",
+    "user_examples_included": 0,
+    "label_distribution": {
+      "apps.capabilities": 9,
+      "apps.close": 18,
+      "apps.focus_window": 22,
+      "apps.launch": 18,
+      "apps.list_installed": 5,
+      "apps.list_windows": 7,
+      "apps.type_text": 21,
+      "browser.open": 19,
+      "desktop.clipboard_get": 7,
+      "desktop.clipboard_set": 5,
+      "desktop.screenshot": 8,
+      "dev.analyze_log": 19,
+      "dev.run": 4,
+      "dev.status": 8,
+      "fs.copy": 17,
+      "fs.create_folder": 15,
+      "fs.duplicates": 6,
+      "fs.extract": 7,
+      "fs.inventory": 8,
+      "fs.list": 7,
+      "fs.move": 10,
+      "fs.quarantine_delete": 14,
+      "fs.read": 19,
+      "fs.rename": 11,
+      "fs.search": 14,
+      "fs.undo_last": 4,
+      "fs.write": 17,
+      "fs.zip": 7,
+      "memory.add_example": 5,
+      "memory.export": 3,
+      "memory.forget": 18,
+      "memory.list": 9,
+      "memory.remember": 16,
+      "memory.set_enabled": 8,
+      "memory.status": 8,
+      "system.audio_devices": 5,
+      "system.battery": 5,
+      "system.info": 6,
+      "system.media_control": 10,
+      "system.offline_status": 8,
+      "system.top_processes": 8,
+      "voice.capabilities": 7,
+      "voice.list_devices": 7,
+      "voice.speak": 17,
+      "voice.status": 5,
+      "windows.bluetooth_status": 5,
+      "windows.display_info": 7,
+      "windows.network_status": 6,
+      "windows.open_folder": 6,
+      "windows.open_settings": 10,
+      "windows.power_status": 6,
+      "windows.startup_list": 7
+    },
+    "validation_accuracy": 0.872881,
+    "validation_examples": 118
+  }
+}

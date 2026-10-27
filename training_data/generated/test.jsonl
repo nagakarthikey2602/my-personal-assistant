@@ -1,0 +1,129 @@
+{"text": "Please force close notepad", "label": "apps.close", "split": "test", "group": "4:1:politeness"}
+{"text": "close explorer", "label": "apps.close", "split": "test", "group": "0:0"}
+{"text": "close the explorer app", "label": "apps.close", "split": "test", "group": "3:0"}
+{"text": "force close calculator", "label": "apps.close", "split": "test", "group": "4:2"}
+{"text": "Please bring explorer to the front", "label": "apps.focus_window", "split": "test", "group": "2:0:politeness"}
+{"text": "Please switch to notepad", "label": "apps.focus_window", "split": "test", "group": "1:1:politeness"}
+{"text": "focus the paint window", "label": "apps.focus_window", "split": "test", "group": "3:3"}
+{"text": "switch to calculator", "label": "apps.focus_window", "split": "test", "group": "1:2"}
+{"text": "Please start notepad", "label": "apps.launch", "split": "test", "group": "2:1:politeness"}
+{"text": "launch explorer", "label": "apps.launch", "split": "test", "group": "1:0"}
+{"text": "open the explorer app", "label": "apps.launch", "split": "test", "group": "3:0"}
+{"text": "open the notepad app", "label": "apps.launch", "split": "test", "group": "3:1"}
+{"text": "run notepad", "label": "apps.launch", "split": "test", "group": "4:1"}
+{"text": "which apps are installed", "label": "apps.list_installed", "split": "test", "group": "4:0"}
+{"text": "list the open application windows", "label": "apps.list_windows", "split": "test", "group": "3:0"}
+{"text": "Please type the text good morning", "label": "apps.type_text", "split": "test", "group": "3:0:politeness"}
+{"text": "Please write testing one two using the keyboard", "label": "apps.type_text", "split": "test", "group": "4:1:politeness"}
+{"text": "type hello world in notepad", "label": "apps.type_text", "split": "test", "group": "1:2"}
+{"text": "Please go to https://example.com", "label": "browser.open", "split": "test", "group": "1:0:politeness"}
+{"text": "Please open https://example.com", "label": "browser.open", "split": "test", "group": "0:0:politeness"}
+{"text": "browse to https://example.org/docs", "label": "browser.open", "split": "test", "group": "4:1"}
+{"text": "open http://localhost:8000", "label": "browser.open", "split": "test", "group": "0:2"}
+{"text": "visit https://example.org/docs", "label": "browser.open", "split": "test", "group": "2:1"}
+{"text": "Please read clipboard contents", "label": "desktop.clipboard_get", "split": "test", "group": "3:0:politeness"}
+{"text": "read the clipboard", "label": "desktop.clipboard_get", "split": "test", "group": "0:0"}
+{"text": "Please copy hello to the clipboard", "label": "desktop.clipboard_set", "split": "test", "group": "0:0:politeness"}
+{"text": "Please take a screenshot of the screen", "label": "desktop.screenshot", "split": "test", "group": "3:0:politeness"}
+{"text": "take a screenshot", "label": "desktop.screenshot", "split": "test", "group": "0:0"}
+{"text": "Please check the error log sandbox\\errors.log", "label": "dev.analyze_log", "split": "test", "group": "1:1:politeness"}
+{"text": "Please inspect the build log sandbox\\app.log", "label": "dev.analyze_log", "split": "test", "group": "2:0:politeness"}
+{"text": "inspect the build log sandbox\\app.log", "label": "dev.analyze_log", "split": "test", "group": "2:0"}
+{"text": "scan sandbox\\app.log for errors", "label": "dev.analyze_log", "split": "test", "group": "3:0"}
+{"text": "show developer command status", "label": "dev.status", "split": "test", "group": "2:0"}
+{"text": "Please duplicate notes.txt into sandbox\\backup.txt", "label": "fs.copy", "split": "test", "group": "1:0:politeness"}
+{"text": "copy budget.csv to sandbox\\archive", "label": "fs.copy", "split": "test", "group": "0:2"}
+{"text": "copy sandbox\\notes.txt to downloads", "label": "fs.copy", "split": "test", "group": "0:3"}
+{"text": "copy the file report.pdf to documents", "label": "fs.copy", "split": "test", "group": "4:0"}
+{"text": "make a copy of budget.csv in downloads", "label": "fs.copy", "split": "test", "group": "3:2"}
+{"text": "Please create a directory receipts in sandbox", "label": "fs.create_folder", "split": "test", "group": "4:0:politeness"}
+{"text": "create a folder archive in sandbox", "label": "fs.create_folder", "split": "test", "group": "0:0"}
+{"text": "Please search for duplicates in sandbox", "label": "fs.duplicates", "split": "test", "group": "1:0:politeness"}
+{"text": "search for duplicates in sandbox", "label": "fs.duplicates", "split": "test", "group": "1:0"}
+{"text": "show duplicate files in documents", "label": "fs.duplicates", "split": "test", "group": "2:0"}
+{"text": "Please unzip downloads\\bundle.zip to sandbox\\bundle", "label": "fs.extract", "split": "test", "group": "3:0:politeness"}
+{"text": "extract the archive sandbox\\documents.zip to sandbox\\docs", "label": "fs.extract", "split": "test", "group": "2:0"}
+{"text": "inventory downloads", "label": "fs.inventory", "split": "test", "group": "0:0"}
+{"text": "Please show the contents of sandbox", "label": "fs.list", "split": "test", "group": "1:0:politeness"}
+{"text": "list files in downloads", "label": "fs.list", "split": "test", "group": "0:0"}
+{"text": "Please remove the file report.pdf", "label": "fs.quarantine_delete", "split": "test", "group": "1:1:politeness"}
+{"text": "delete sandbox\\notes.txt", "label": "fs.quarantine_delete", "split": "test", "group": "0:3"}
+{"text": "quarantine notes.txt", "label": "fs.quarantine_delete", "split": "test", "group": "2:0"}
+{"text": "trash sandbox\\draft.txt", "label": "fs.quarantine_delete", "split": "test", "group": "3:0"}
+{"text": "Please read the document notes.txt", "label": "fs.read", "split": "test", "group": "4:0:politeness"}
+{"text": "Please show me notes.txt", "label": "fs.read", "split": "test", "group": "1:0:politeness"}
+{"text": "Please show me report.pdf", "label": "fs.read", "split": "test", "group": "1:1:politeness"}
+{"text": "display the contents of report.pdf", "label": "fs.read", "split": "test", "group": "3:1"}
+{"text": "show me report.pdf", "label": "fs.read", "split": "test", "group": "1:1"}
+{"text": "Please rename the file report.pdf as final-report.pdf", "label": "fs.rename", "split": "test", "group": "2:0:politeness"}
+{"text": "Please rename the folder receipts to archive", "label": "fs.rename", "split": "test", "group": "4:0:politeness"}
+{"text": "rename notes.txt to final-report.txt", "label": "fs.rename", "split": "test", "group": "0:0"}
+{"text": "Please find budget files in downloads", "label": "fs.search", "split": "test", "group": "0:1:politeness"}
+{"text": "Please search sandbox for files containing report", "label": "fs.search", "split": "test", "group": "3:0:politeness"}
+{"text": "find pdf files in downloads", "label": "fs.search", "split": "test", "group": "4:0"}
+{"text": "search sandbox for files containing budget", "label": "fs.search", "split": "test", "group": "3:1"}
+{"text": "undo the last action", "label": "fs.undo_last", "split": "test", "group": "1:0"}
+{"text": "Please create a text file notes.txt in sandbox with content draft text", "label": "fs.write", "split": "test", "group": "3:0:politeness"}
+{"text": "Please write Hello world to sandbox\\draft.txt", "label": "fs.write", "split": "test", "group": "1:1:politeness"}
+{"text": "create a text file notes.txt in sandbox with content alpha beta gamma", "label": "fs.write", "split": "test", "group": "3:3"}
+{"text": "save alpha beta gamma into sandbox\\notes.txt", "label": "fs.write", "split": "test", "group": "2:3"}
+{"text": "write Hello world to sandbox\\draft.txt", "label": "fs.write", "split": "test", "group": "1:1"}
+{"text": "write alpha beta gamma to sandbox\\draft.txt", "label": "fs.write", "split": "test", "group": "1:3"}
+{"text": "compress sandbox\\reports into sandbox\\archive.zip", "label": "fs.zip", "split": "test", "group": "1:1"}
+{"text": "create a zip of sandbox\\reports", "label": "fs.zip", "split": "test", "group": "4:0"}
+{"text": "Please remember training example \"undo\" as fs.undo_last", "label": "memory.add_example", "split": "test", "group": "4:0:politeness"}
+{"text": "add a training example \"list files in downloads\" as fs.list", "label": "memory.add_example", "split": "test", "group": "3:0"}
+{"text": "Please export my memory to sandbox\\export.json", "label": "memory.export", "split": "test", "group": "2:0:politeness"}
+{"text": "Please save memory into sandbox\\backup.json", "label": "memory.export", "split": "test", "group": "4:0:politeness"}
+{"text": "Please write memory to sandbox\\memory-export.json", "label": "memory.export", "split": "test", "group": "3:0:politeness"}
+{"text": "export my memory to sandbox\\export.json", "label": "memory.export", "split": "test", "group": "2:0"}
+{"text": "save memory into sandbox\\backup.json", "label": "memory.export", "split": "test", "group": "4:0"}
+{"text": "write memory to sandbox\\memory-export.json", "label": "memory.export", "split": "test", "group": "3:0"}
+{"text": "delete the preference browser", "label": "memory.forget", "split": "test", "group": "3:1"}
+{"text": "forget my editor", "label": "memory.forget", "split": "test", "group": "0:0"}
+{"text": "Please keep in mind that my editor is sandbox", "label": "memory.remember", "split": "test", "group": "3:0:politeness"}
+{"text": "Please remember my editor is sandbox", "label": "memory.remember", "split": "test", "group": "1:0:politeness"}
+{"text": "Please remember the editor is sandbox", "label": "memory.remember", "split": "test", "group": "2:0:politeness"}
+{"text": "note that my browser is notepad", "label": "memory.remember", "split": "test", "group": "4:1"}
+{"text": "remember that my browser is notepad", "label": "memory.remember", "split": "test", "group": "0:1"}
+{"text": "disable the memory", "label": "memory.set_enabled", "split": "test", "group": "4:0"}
+{"text": "memory status", "label": "memory.status", "split": "test", "group": "0:0"}
+{"text": "Please show sound devices", "label": "system.audio_devices", "split": "test", "group": "3:0:politeness"}
+{"text": "Please what audio devices are available", "label": "system.audio_devices", "split": "test", "group": "4:0:politeness"}
+{"text": "audio devices", "label": "system.audio_devices", "split": "test", "group": "0:0"}
+{"text": "battery level", "label": "system.battery", "split": "test", "group": "1:0"}
+{"text": "Please show system information", "label": "system.info", "split": "test", "group": "2:0:politeness"}
+{"text": "show system information", "label": "system.info", "split": "test", "group": "2:0"}
+{"text": "system info", "label": "system.info", "split": "test", "group": "0:0"}
+{"text": "Please media control volume up", "label": "system.media_control", "split": "test", "group": "0:1:politeness"}
+{"text": "Please volume up", "label": "system.media_control", "split": "test", "group": "3:0:politeness"}
+{"text": "media control pause", "label": "system.media_control", "split": "test", "group": "0:2"}
+{"text": "Please offline status", "label": "system.offline_status", "split": "test", "group": "0:0:politeness"}
+{"text": "are you offline", "label": "system.offline_status", "split": "test", "group": "1:0"}
+{"text": "Please top processes", "label": "system.top_processes", "split": "test", "group": "0:0:politeness"}
+{"text": "what speech features are available", "label": "voice.capabilities", "split": "test", "group": "3:0"}
+{"text": "Please list the audio input and output devices", "label": "voice.list_devices", "split": "test", "group": "4:0:politeness"}
+{"text": "Please read aloud hello there", "label": "voice.speak", "split": "test", "group": "4:0:politeness"}
+{"text": "Please speak good morning", "label": "voice.speak", "split": "test", "group": "0:1:politeness"}
+{"text": "read aloud hello there", "label": "voice.speak", "split": "test", "group": "4:0"}
+{"text": "say the words good morning", "label": "voice.speak", "split": "test", "group": "3:1"}
+{"text": "say the words hello there", "label": "voice.speak", "split": "test", "group": "3:0"}
+{"text": "speak the text good morning", "label": "voice.speak", "split": "test", "group": "2:1"}
+{"text": "Please show speech status", "label": "voice.status", "split": "test", "group": "4:0:politeness"}
+{"text": "Please show voice status", "label": "voice.status", "split": "test", "group": "2:0:politeness"}
+{"text": "Please bluetooth state", "label": "windows.bluetooth_status", "split": "test", "group": "2:0:politeness"}
+{"text": "bluetooth status", "label": "windows.bluetooth_status", "split": "test", "group": "0:0"}
+{"text": "is bluetooth on", "label": "windows.bluetooth_status", "split": "test", "group": "1:0"}
+{"text": "Please display information", "label": "windows.display_info", "split": "test", "group": "3:0:politeness"}
+{"text": "display information", "label": "windows.display_info", "split": "test", "group": "3:0"}
+{"text": "Please network status", "label": "windows.network_status", "split": "test", "group": "0:0:politeness"}
+{"text": "is the network connected", "label": "windows.network_status", "split": "test", "group": "4:0"}
+{"text": "Please open the sandbox folder", "label": "windows.open_folder", "split": "test", "group": "3:0:politeness"}
+{"text": "show the documents directory", "label": "windows.open_folder", "split": "test", "group": "4:0"}
+{"text": "Please open network settings", "label": "windows.open_settings", "split": "test", "group": "3:0:politeness"}
+{"text": "open display settings", "label": "windows.open_settings", "split": "test", "group": "1:0"}
+{"text": "show the power plan", "label": "windows.power_status", "split": "test", "group": "3:0"}
+{"text": "what is the power status", "label": "windows.power_status", "split": "test", "group": "4:0"}
+{"text": "Please startup apps", "label": "windows.startup_list", "split": "test", "group": "0:0:politeness"}
+{"text": "list startup entries", "label": "windows.startup_list", "split": "test", "group": "1:0"}
+{"text": "startup apps", "label": "windows.startup_list", "split": "test", "group": "0:0"}

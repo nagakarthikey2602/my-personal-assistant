@@ -1,0 +1,518 @@
+{"text": "Please app capabilities", "label": "apps.capabilities", "split": "train", "group": "0:0:politeness"}
+{"text": "Please application capabilities", "label": "apps.capabilities", "split": "train", "group": "1:0:politeness"}
+{"text": "Please show app capabilities", "label": "apps.capabilities", "split": "train", "group": "3:0:politeness"}
+{"text": "Please what app actions are available", "label": "apps.capabilities", "split": "train", "group": "4:0:politeness"}
+{"text": "Please what can you do with applications", "label": "apps.capabilities", "split": "train", "group": "2:0:politeness"}
+{"text": "app capabilities", "label": "apps.capabilities", "split": "train", "group": "0:0"}
+{"text": "show app capabilities", "label": "apps.capabilities", "split": "train", "group": "3:0"}
+{"text": "what app actions are available", "label": "apps.capabilities", "split": "train", "group": "4:0"}
+{"text": "what can you do with applications", "label": "apps.capabilities", "split": "train", "group": "2:0"}
+{"text": "Please close explorer", "label": "apps.close", "split": "train", "group": "0:0:politeness"}
+{"text": "Please close notepad", "label": "apps.close", "split": "train", "group": "0:1:politeness"}
+{"text": "Please close the explorer app", "label": "apps.close", "split": "train", "group": "3:0:politeness"}
+{"text": "Please close the notepad app", "label": "apps.close", "split": "train", "group": "3:1:politeness"}
+{"text": "Please force close explorer", "label": "apps.close", "split": "train", "group": "4:0:politeness"}
+{"text": "close calculator", "label": "apps.close", "split": "train", "group": "0:2"}
+{"text": "close paint", "label": "apps.close", "split": "train", "group": "0:3"}
+{"text": "close the calculator app", "label": "apps.close", "split": "train", "group": "3:2"}
+{"text": "close the notepad app", "label": "apps.close", "split": "train", "group": "3:1"}
+{"text": "force close explorer", "label": "apps.close", "split": "train", "group": "4:0"}
+{"text": "force close notepad", "label": "apps.close", "split": "train", "group": "4:1"}
+{"text": "force close paint", "label": "apps.close", "split": "train", "group": "4:3"}
+{"text": "quit explorer", "label": "apps.close", "split": "train", "group": "1:0"}
+{"text": "quit notepad", "label": "apps.close", "split": "train", "group": "1:1"}
+{"text": "quit paint", "label": "apps.close", "split": "train", "group": "1:3"}
+{"text": "terminate calculator", "label": "apps.close", "split": "train", "group": "2:2"}
+{"text": "terminate explorer", "label": "apps.close", "split": "train", "group": "2:0"}
+{"text": "terminate paint", "label": "apps.close", "split": "train", "group": "2:3"}
+{"text": "Please bring notepad to the front", "label": "apps.focus_window", "split": "train", "group": "2:1:politeness"}
+{"text": "Please focus explorer", "label": "apps.focus_window", "split": "train", "group": "0:0:politeness"}
+{"text": "Please focus notepad", "label": "apps.focus_window", "split": "train", "group": "0:1:politeness"}
+{"text": "Please focus the explorer window", "label": "apps.focus_window", "split": "train", "group": "3:0:politeness"}
+{"text": "Please focus the notepad window", "label": "apps.focus_window", "split": "train", "group": "3:1:politeness"}
+{"text": "Please switch to the explorer window", "label": "apps.focus_window", "split": "train", "group": "4:0:politeness"}
+{"text": "Please switch to the notepad window", "label": "apps.focus_window", "split": "train", "group": "4:1:politeness"}
+{"text": "bring calculator to the front", "label": "apps.focus_window", "split": "train", "group": "2:2"}
+{"text": "bring explorer to the front", "label": "apps.focus_window", "split": "train", "group": "2:0"}
+{"text": "bring notepad to the front", "label": "apps.focus_window", "split": "train", "group": "2:1"}
+{"text": "focus explorer", "label": "apps.focus_window", "split": "train", "group": "0:0"}
+{"text": "focus notepad", "label": "apps.focus_window", "split": "train", "group": "0:1"}
+{"text": "focus paint", "label": "apps.focus_window", "split": "train", "group": "0:3"}
+{"text": "focus the calculator window", "label": "apps.focus_window", "split": "train", "group": "3:2"}
+{"text": "focus the explorer window", "label": "apps.focus_window", "split": "train", "group": "3:0"}
+{"text": "focus the notepad window", "label": "apps.focus_window", "split": "train", "group": "3:1"}
+{"text": "switch to explorer", "label": "apps.focus_window", "split": "train", "group": "1:0"}
+{"text": "switch to notepad", "label": "apps.focus_window", "split": "train", "group": "1:1"}
+{"text": "switch to paint", "label": "apps.focus_window", "split": "train", "group": "1:3"}
+{"text": "switch to the explorer window", "label": "apps.focus_window", "split": "train", "group": "4:0"}
+{"text": "switch to the notepad window", "label": "apps.focus_window", "split": "train", "group": "4:1"}
+{"text": "switch to the paint window", "label": "apps.focus_window", "split": "train", "group": "4:3"}
+{"text": "Please launch notepad", "label": "apps.launch", "split": "train", "group": "1:1:politeness"}
+{"text": "Please open explorer", "label": "apps.launch", "split": "train", "group": "0:0:politeness"}
+{"text": "Please open notepad", "label": "apps.launch", "split": "train", "group": "0:1:politeness"}
+{"text": "Please open the explorer app", "label": "apps.launch", "split": "train", "group": "3:0:politeness"}
+{"text": "Please open the notepad app", "label": "apps.launch", "split": "train", "group": "3:1:politeness"}
+{"text": "Please start explorer", "label": "apps.launch", "split": "train", "group": "2:0:politeness"}
+{"text": "launch calculator", "label": "apps.launch", "split": "train", "group": "1:2"}
+{"text": "launch notepad", "label": "apps.launch", "split": "train", "group": "1:1"}
+{"text": "open explorer", "label": "apps.launch", "split": "train", "group": "0:0"}
+{"text": "open notepad", "label": "apps.launch", "split": "train", "group": "0:1"}
+{"text": "open the calculator app", "label": "apps.launch", "split": "train", "group": "3:2"}
+{"text": "open the paint app", "label": "apps.launch", "split": "train", "group": "3:3"}
+{"text": "run calculator", "label": "apps.launch", "split": "train", "group": "4:2"}
+{"text": "run explorer", "label": "apps.launch", "split": "train", "group": "4:0"}
+{"text": "run paint", "label": "apps.launch", "split": "train", "group": "4:3"}
+{"text": "start calculator", "label": "apps.launch", "split": "train", "group": "2:2"}
+{"text": "start notepad", "label": "apps.launch", "split": "train", "group": "2:1"}
+{"text": "start paint", "label": "apps.launch", "split": "train", "group": "2:3"}
+{"text": "Please list the installed applications", "label": "apps.list_installed", "split": "train", "group": "3:0:politeness"}
+{"text": "Please show installed programs", "label": "apps.list_installed", "split": "train", "group": "2:0:politeness"}
+{"text": "Please which apps are installed", "label": "apps.list_installed", "split": "train", "group": "4:0:politeness"}
+{"text": "list installed apps", "label": "apps.list_installed", "split": "train", "group": "0:0"}
+{"text": "list the installed applications", "label": "apps.list_installed", "split": "train", "group": "3:0"}
+{"text": "Please list open windows", "label": "apps.list_windows", "split": "train", "group": "0:0:politeness"}
+{"text": "Please list the open application windows", "label": "apps.list_windows", "split": "train", "group": "3:0:politeness"}
+{"text": "Please show windows", "label": "apps.list_windows", "split": "train", "group": "2:0:politeness"}
+{"text": "Please what apps have open windows", "label": "apps.list_windows", "split": "train", "group": "4:0:politeness"}
+{"text": "list open windows", "label": "apps.list_windows", "split": "train", "group": "0:0"}
+{"text": "what apps have open windows", "label": "apps.list_windows", "split": "train", "group": "4:0"}
+{"text": "what windows are open", "label": "apps.list_windows", "split": "train", "group": "1:0"}
+{"text": "Please enter the text good morning", "label": "apps.type_text", "split": "train", "group": "2:0:politeness"}
+{"text": "Please enter the text testing one two", "label": "apps.type_text", "split": "train", "group": "2:1:politeness"}
+{"text": "Please type good morning", "label": "apps.type_text", "split": "train", "group": "0:0:politeness"}
+{"text": "Please type good morning in notepad", "label": "apps.type_text", "split": "train", "group": "1:0:politeness"}
+{"text": "Please type testing one two", "label": "apps.type_text", "split": "train", "group": "0:1:politeness"}
+{"text": "Please type testing one two in notepad", "label": "apps.type_text", "split": "train", "group": "1:1:politeness"}
+{"text": "Please type the text testing one two", "label": "apps.type_text", "split": "train", "group": "3:1:politeness"}
+{"text": "Please write good morning using the keyboard", "label": "apps.type_text", "split": "train", "group": "4:0:politeness"}
+{"text": "enter the text good morning", "label": "apps.type_text", "split": "train", "group": "2:0"}
+{"text": "enter the text hello world", "label": "apps.type_text", "split": "train", "group": "2:2"}
+{"text": "enter the text testing one two", "label": "apps.type_text", "split": "train", "group": "2:1"}
+{"text": "type good morning", "label": "apps.type_text", "split": "train", "group": "0:0"}
+{"text": "type hello world", "label": "apps.type_text", "split": "train", "group": "0:2"}
+{"text": "type testing one two", "label": "apps.type_text", "split": "train", "group": "0:1"}
+{"text": "type testing one two in notepad", "label": "apps.type_text", "split": "train", "group": "1:1"}
+{"text": "type the text good morning", "label": "apps.type_text", "split": "train", "group": "3:0"}
+{"text": "type the text hello world", "label": "apps.type_text", "split": "train", "group": "3:2"}
+{"text": "type the text testing one two", "label": "apps.type_text", "split": "train", "group": "3:1"}
+{"text": "write good morning using the keyboard", "label": "apps.type_text", "split": "train", "group": "4:0"}
+{"text": "write hello world using the keyboard", "label": "apps.type_text", "split": "train", "group": "4:2"}
+{"text": "write testing one two using the keyboard", "label": "apps.type_text", "split": "train", "group": "4:1"}
+{"text": "Please browse to https://example.com", "label": "browser.open", "split": "train", "group": "4:0:politeness"}
+{"text": "Please browse to https://example.org/docs", "label": "browser.open", "split": "train", "group": "4:1:politeness"}
+{"text": "Please go to https://example.org/docs", "label": "browser.open", "split": "train", "group": "1:1:politeness"}
+{"text": "Please open https://example.org/docs", "label": "browser.open", "split": "train", "group": "0:1:politeness"}
+{"text": "Please open the url https://example.com", "label": "browser.open", "split": "train", "group": "3:0:politeness"}
+{"text": "Please open the url https://example.org/docs", "label": "browser.open", "split": "train", "group": "3:1:politeness"}
+{"text": "Please visit https://example.com", "label": "browser.open", "split": "train", "group": "2:0:politeness"}
+{"text": "Please visit https://example.org/docs", "label": "browser.open", "split": "train", "group": "2:1:politeness"}
+{"text": "browse to http://localhost:8000", "label": "browser.open", "split": "train", "group": "4:2"}
+{"text": "go to http://localhost:8000", "label": "browser.open", "split": "train", "group": "1:2"}
+{"text": "go to https://example.com", "label": "browser.open", "split": "train", "group": "1:0"}
+{"text": "go to https://example.org/docs", "label": "browser.open", "split": "train", "group": "1:1"}
+{"text": "open https://example.com", "label": "browser.open", "split": "train", "group": "0:0"}
+{"text": "open https://example.org/docs", "label": "browser.open", "split": "train", "group": "0:1"}
+{"text": "open the url http://localhost:8000", "label": "browser.open", "split": "train", "group": "3:2"}
+{"text": "open the url https://example.com", "label": "browser.open", "split": "train", "group": "3:0"}
+{"text": "open the url https://example.org/docs", "label": "browser.open", "split": "train", "group": "3:1"}
+{"text": "visit http://localhost:8000", "label": "browser.open", "split": "train", "group": "2:2"}
+{"text": "visit https://example.com", "label": "browser.open", "split": "train", "group": "2:0"}
+{"text": "Please read the clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "0:0:politeness"}
+{"text": "Please show clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "2:0:politeness"}
+{"text": "Please tell me what is in the clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "4:0:politeness"}
+{"text": "Please what is on the clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "1:0:politeness"}
+{"text": "read clipboard contents", "label": "desktop.clipboard_get", "split": "train", "group": "3:0"}
+{"text": "show clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "2:0"}
+{"text": "tell me what is in the clipboard", "label": "desktop.clipboard_get", "split": "train", "group": "4:0"}
+{"text": "Please copy this text to the clipboard", "label": "desktop.clipboard_set", "split": "train", "group": "3:0:politeness"}
+{"text": "copy hello to the clipboard", "label": "desktop.clipboard_set", "split": "train", "group": "0:0"}
+{"text": "copy this text to the clipboard", "label": "desktop.clipboard_set", "split": "train", "group": "3:0"}
+{"text": "set the clipboard to hello", "label": "desktop.clipboard_set", "split": "train", "group": "2:0"}
+{"text": "write hello to the clipboard", "label": "desktop.clipboard_set", "split": "train", "group": "4:0"}
+{"text": "Please capture a screenshot", "label": "desktop.screenshot", "split": "train", "group": "4:0:politeness"}
+{"text": "Please capture the screen", "label": "desktop.screenshot", "split": "train", "group": "1:0:politeness"}
+{"text": "Please screenshot", "label": "desktop.screenshot", "split": "train", "group": "2:0:politeness"}
+{"text": "Please take a screenshot", "label": "desktop.screenshot", "split": "train", "group": "0:0:politeness"}
+{"text": "capture a screenshot", "label": "desktop.screenshot", "split": "train", "group": "4:0"}
+{"text": "capture the screen", "label": "desktop.screenshot", "split": "train", "group": "1:0"}
+{"text": "screenshot", "label": "desktop.screenshot", "split": "train", "group": "2:0"}
+{"text": "take a screenshot of the screen", "label": "desktop.screenshot", "split": "train", "group": "3:0"}
+{"text": "Please analyze log file sandbox\\app.log", "label": "dev.analyze_log", "split": "train", "group": "4:0:politeness"}
+{"text": "Please analyze log file sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "4:1:politeness"}
+{"text": "Please analyze the log sandbox\\app.log", "label": "dev.analyze_log", "split": "train", "group": "0:0:politeness"}
+{"text": "Please analyze the log sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "0:1:politeness"}
+{"text": "Please check the error log sandbox\\app.log", "label": "dev.analyze_log", "split": "train", "group": "1:0:politeness"}
+{"text": "Please inspect the build log sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "2:1:politeness"}
+{"text": "Please scan sandbox\\app.log for errors", "label": "dev.analyze_log", "split": "train", "group": "3:0:politeness"}
+{"text": "Please scan sandbox\\errors.log for errors", "label": "dev.analyze_log", "split": "train", "group": "3:1:politeness"}
+{"text": "analyze log file sandbox\\build.log", "label": "dev.analyze_log", "split": "train", "group": "4:2"}
+{"text": "analyze log file sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "4:1"}
+{"text": "analyze the log sandbox\\app.log", "label": "dev.analyze_log", "split": "train", "group": "0:0"}
+{"text": "analyze the log sandbox\\build.log", "label": "dev.analyze_log", "split": "train", "group": "0:2"}
+{"text": "check the error log sandbox\\app.log", "label": "dev.analyze_log", "split": "train", "group": "1:0"}
+{"text": "check the error log sandbox\\build.log", "label": "dev.analyze_log", "split": "train", "group": "1:2"}
+{"text": "check the error log sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "1:1"}
+{"text": "inspect the build log sandbox\\build.log", "label": "dev.analyze_log", "split": "train", "group": "2:2"}
+{"text": "inspect the build log sandbox\\errors.log", "label": "dev.analyze_log", "split": "train", "group": "2:1"}
+{"text": "scan sandbox\\build.log for errors", "label": "dev.analyze_log", "split": "train", "group": "3:2"}
+{"text": "scan sandbox\\errors.log for errors", "label": "dev.analyze_log", "split": "train", "group": "3:1"}
+{"text": "git diff", "label": "dev.run", "split": "train", "group": "4:0"}
+{"text": "git log", "label": "dev.run", "split": "train", "group": "3:0"}
+{"text": "git status", "label": "dev.run", "split": "train", "group": "2:0"}
+{"text": "run the tests", "label": "dev.run", "split": "train", "group": "0:0"}
+{"text": "Please dev status", "label": "dev.status", "split": "train", "group": "0:0:politeness"}
+{"text": "Please developer status", "label": "dev.status", "split": "train", "group": "1:0:politeness"}
+{"text": "Please development status", "label": "dev.status", "split": "train", "group": "3:0:politeness"}
+{"text": "Please show dev status", "label": "dev.status", "split": "train", "group": "4:0:politeness"}
+{"text": "Please show developer command status", "label": "dev.status", "split": "train", "group": "2:0:politeness"}
+{"text": "dev status", "label": "dev.status", "split": "train", "group": "0:0"}
+{"text": "development status", "label": "dev.status", "split": "train", "group": "3:0"}
+{"text": "show dev status", "label": "dev.status", "split": "train", "group": "4:0"}
+{"text": "Please copy notes.txt to downloads", "label": "fs.copy", "split": "train", "group": "0:0:politeness"}
+{"text": "Please copy notes.txt to sandbox\\archive", "label": "fs.copy", "split": "train", "group": "2:0:politeness"}
+{"text": "Please copy report.pdf to documents", "label": "fs.copy", "split": "train", "group": "0:1:politeness"}
+{"text": "Please copy the file report.pdf to documents", "label": "fs.copy", "split": "train", "group": "4:0:politeness"}
+{"text": "Please duplicate report.pdf into sandbox\\backup.txt", "label": "fs.copy", "split": "train", "group": "1:1:politeness"}
+{"text": "Please make a copy of notes.txt in downloads", "label": "fs.copy", "split": "train", "group": "3:0:politeness"}
+{"text": "Please make a copy of report.pdf in downloads", "label": "fs.copy", "split": "train", "group": "3:1:politeness"}
+{"text": "copy notes.txt to downloads", "label": "fs.copy", "split": "train", "group": "0:0"}
+{"text": "copy notes.txt to sandbox\\archive", "label": "fs.copy", "split": "train", "group": "2:0"}
+{"text": "copy report.pdf to documents", "label": "fs.copy", "split": "train", "group": "0:1"}
+{"text": "duplicate budget.csv into sandbox\\backup.txt", "label": "fs.copy", "split": "train", "group": "1:2"}
+{"text": "duplicate notes.txt into sandbox\\backup.txt", "label": "fs.copy", "split": "train", "group": "1:0"}
+{"text": "duplicate report.pdf into sandbox\\backup.txt", "label": "fs.copy", "split": "train", "group": "1:1"}
+{"text": "duplicate sandbox\\notes.txt into sandbox\\backup.txt", "label": "fs.copy", "split": "train", "group": "1:3"}
+{"text": "make a copy of notes.txt in downloads", "label": "fs.copy", "split": "train", "group": "3:0"}
+{"text": "make a copy of report.pdf in downloads", "label": "fs.copy", "split": "train", "group": "3:1"}
+{"text": "make a copy of sandbox\\notes.txt in downloads", "label": "fs.copy", "split": "train", "group": "3:3"}
+{"text": "Please create a folder archive in sandbox", "label": "fs.create_folder", "split": "train", "group": "0:0:politeness"}
+{"text": "Please create the folder archive in documents", "label": "fs.create_folder", "split": "train", "group": "2:0:politeness"}
+{"text": "Please create the folder sandbox\\reports in documents", "label": "fs.create_folder", "split": "train", "group": "2:1:politeness"}
+{"text": "Please make a directory called sandbox\\reports in downloads", "label": "fs.create_folder", "split": "train", "group": "1:1:politeness"}
+{"text": "Please make a new folder named project in sandbox", "label": "fs.create_folder", "split": "train", "group": "3:0:politeness"}
+{"text": "create a directory receipts in sandbox", "label": "fs.create_folder", "split": "train", "group": "4:0"}
+{"text": "create a folder reports in sandbox", "label": "fs.create_folder", "split": "train", "group": "0:2"}
+{"text": "create a folder sandbox\\reports in sandbox", "label": "fs.create_folder", "split": "train", "group": "0:1"}
+{"text": "create the folder archive in documents", "label": "fs.create_folder", "split": "train", "group": "2:0"}
+{"text": "create the folder receipts in documents", "label": "fs.create_folder", "split": "train", "group": "2:3"}
+{"text": "create the folder sandbox\\reports in documents", "label": "fs.create_folder", "split": "train", "group": "2:1"}
+{"text": "make a directory called archive in downloads", "label": "fs.create_folder", "split": "train", "group": "1:0"}
+{"text": "make a directory called receipts in downloads", "label": "fs.create_folder", "split": "train", "group": "1:3"}
+{"text": "make a directory called reports in downloads", "label": "fs.create_folder", "split": "train", "group": "1:2"}
+{"text": "make a directory called sandbox\\reports in downloads", "label": "fs.create_folder", "split": "train", "group": "1:1"}
+{"text": "Please find duplicate files in downloads", "label": "fs.duplicates", "split": "train", "group": "0:0:politeness"}
+{"text": "Please find duplicates in sandbox", "label": "fs.duplicates", "split": "train", "group": "3:0:politeness"}
+{"text": "Please look for duplicate files in desktop", "label": "fs.duplicates", "split": "train", "group": "4:0:politeness"}
+{"text": "Please show duplicate files in documents", "label": "fs.duplicates", "split": "train", "group": "2:0:politeness"}
+{"text": "find duplicates in sandbox", "label": "fs.duplicates", "split": "train", "group": "3:0"}
+{"text": "look for duplicate files in desktop", "label": "fs.duplicates", "split": "train", "group": "4:0"}
+{"text": "Please extract sandbox\\reports.zip", "label": "fs.extract", "split": "train", "group": "4:0:politeness"}
+{"text": "Please extract sandbox\\reports.zip to sandbox\\out", "label": "fs.extract", "split": "train", "group": "0:0:politeness"}
+{"text": "Please extract the archive sandbox\\documents.zip to sandbox\\docs", "label": "fs.extract", "split": "train", "group": "2:0:politeness"}
+{"text": "Please unzip sandbox\\archive.zip into sandbox\\archive-files", "label": "fs.extract", "split": "train", "group": "1:0:politeness"}
+{"text": "extract sandbox\\reports.zip", "label": "fs.extract", "split": "train", "group": "4:0"}
+{"text": "unzip downloads\\bundle.zip to sandbox\\bundle", "label": "fs.extract", "split": "train", "group": "3:0"}
+{"text": "unzip sandbox\\archive.zip into sandbox\\archive-files", "label": "fs.extract", "split": "train", "group": "1:0"}
+{"text": "Please create an inventory of sandbox", "label": "fs.inventory", "split": "train", "group": "2:0:politeness"}
+{"text": "Please generate an inventory for the desktop folder", "label": "fs.inventory", "split": "train", "group": "3:0:politeness"}
+{"text": "Please inventory downloads", "label": "fs.inventory", "split": "train", "group": "0:0:politeness"}
+{"text": "Please show a file inventory of documents", "label": "fs.inventory", "split": "train", "group": "1:0:politeness"}
+{"text": "create an inventory of sandbox", "label": "fs.inventory", "split": "train", "group": "2:0"}
+{"text": "generate an inventory for the desktop folder", "label": "fs.inventory", "split": "train", "group": "3:0"}
+{"text": "inventory of sandbox", "label": "fs.inventory", "split": "train", "group": "4:0"}
+{"text": "show a file inventory of documents", "label": "fs.inventory", "split": "train", "group": "1:0"}
+{"text": "Please list documents", "label": "fs.list", "split": "train", "group": "2:0:politeness"}
+{"text": "Please list files in downloads", "label": "fs.list", "split": "train", "group": "0:0:politeness"}
+{"text": "Please list the folder sandbox", "label": "fs.list", "split": "train", "group": "4:0:politeness"}
+{"text": "list documents", "label": "fs.list", "split": "train", "group": "2:0"}
+{"text": "list the folder sandbox", "label": "fs.list", "split": "train", "group": "4:0"}
+{"text": "show me what is in the desktop folder", "label": "fs.list", "split": "train", "group": "3:0"}
+{"text": "show the contents of sandbox", "label": "fs.list", "split": "train", "group": "1:0"}
+{"text": "Please move notes.txt into the archive folder", "label": "fs.move", "split": "train", "group": "3:0:politeness"}
+{"text": "Please move notes.txt to downloads", "label": "fs.move", "split": "train", "group": "0:0:politeness"}
+{"text": "Please move report.pdf to documents", "label": "fs.move", "split": "train", "group": "0:1:politeness"}
+{"text": "Please transfer notes.txt into sandbox\\archive", "label": "fs.move", "split": "train", "group": "1:0:politeness"}
+{"text": "Please transfer report.pdf into sandbox\\archive", "label": "fs.move", "split": "train", "group": "1:1:politeness"}
+{"text": "move notes.txt to downloads", "label": "fs.move", "split": "train", "group": "0:0"}
+{"text": "move report.pdf to documents", "label": "fs.move", "split": "train", "group": "0:1"}
+{"text": "move sandbox\\notes.txt to downloads", "label": "fs.move", "split": "train", "group": "0:3"}
+{"text": "transfer budget.csv into sandbox\\archive", "label": "fs.move", "split": "train", "group": "1:2"}
+{"text": "transfer notes.txt into sandbox\\archive", "label": "fs.move", "split": "train", "group": "1:0"}
+{"text": "Please delete notes.txt", "label": "fs.quarantine_delete", "split": "train", "group": "0:0:politeness"}
+{"text": "Please delete report.pdf", "label": "fs.quarantine_delete", "split": "train", "group": "0:1:politeness"}
+{"text": "Please delete the folder sandbox\\archive", "label": "fs.quarantine_delete", "split": "train", "group": "4:0:politeness"}
+{"text": "Please remove the file notes.txt", "label": "fs.quarantine_delete", "split": "train", "group": "1:0:politeness"}
+{"text": "Please trash sandbox\\draft.txt", "label": "fs.quarantine_delete", "split": "train", "group": "3:0:politeness"}
+{"text": "delete budget.csv", "label": "fs.quarantine_delete", "split": "train", "group": "0:2"}
+{"text": "delete notes.txt", "label": "fs.quarantine_delete", "split": "train", "group": "0:0"}
+{"text": "delete report.pdf", "label": "fs.quarantine_delete", "split": "train", "group": "0:1"}
+{"text": "delete the folder sandbox\\archive", "label": "fs.quarantine_delete", "split": "train", "group": "4:0"}
+{"text": "quarantine budget.csv", "label": "fs.quarantine_delete", "split": "train", "group": "2:2"}
+{"text": "quarantine sandbox\\notes.txt", "label": "fs.quarantine_delete", "split": "train", "group": "2:3"}
+{"text": "remove the file budget.csv", "label": "fs.quarantine_delete", "split": "train", "group": "1:2"}
+{"text": "remove the file notes.txt", "label": "fs.quarantine_delete", "split": "train", "group": "1:0"}
+{"text": "remove the file report.pdf", "label": "fs.quarantine_delete", "split": "train", "group": "1:1"}
+{"text": "Please display the contents of notes.txt", "label": "fs.read", "split": "train", "group": "3:0:politeness"}
+{"text": "Please display the contents of report.pdf", "label": "fs.read", "split": "train", "group": "3:1:politeness"}
+{"text": "Please read notes.txt", "label": "fs.read", "split": "train", "group": "0:0:politeness"}
+{"text": "Please read report.pdf", "label": "fs.read", "split": "train", "group": "0:1:politeness"}
+{"text": "Please read the document report.pdf", "label": "fs.read", "split": "train", "group": "4:1:politeness"}
+{"text": "display the contents of budget.csv", "label": "fs.read", "split": "train", "group": "3:2"}
+{"text": "display the contents of notes.txt", "label": "fs.read", "split": "train", "group": "3:0"}
+{"text": "display the contents of sandbox\\notes.txt", "label": "fs.read", "split": "train", "group": "3:3"}
+{"text": "open the file notes.txt", "label": "fs.read", "split": "train", "group": "2:0"}
+{"text": "open the file report.pdf", "label": "fs.read", "split": "train", "group": "2:1"}
+{"text": "open the file sandbox\\notes.txt", "label": "fs.read", "split": "train", "group": "2:3"}
+{"text": "read notes.txt", "label": "fs.read", "split": "train", "group": "0:0"}
+{"text": "read report.pdf", "label": "fs.read", "split": "train", "group": "0:1"}
+{"text": "read sandbox\\notes.txt", "label": "fs.read", "split": "train", "group": "0:3"}
+{"text": "read the document report.pdf", "label": "fs.read", "split": "train", "group": "4:1"}
+{"text": "read the document sandbox\\notes.txt", "label": "fs.read", "split": "train", "group": "4:3"}
+{"text": "show me budget.csv", "label": "fs.read", "split": "train", "group": "1:2"}
+{"text": "show me notes.txt", "label": "fs.read", "split": "train", "group": "1:0"}
+{"text": "show me sandbox\\notes.txt", "label": "fs.read", "split": "train", "group": "1:3"}
+{"text": "Please rename notes.txt to final-report.txt", "label": "fs.rename", "split": "train", "group": "0:0:politeness"}
+{"text": "Please rename notes.txt to memo.txt", "label": "fs.rename", "split": "train", "group": "1:0:politeness"}
+{"text": "Please rename report.pdf to renamed.dat", "label": "fs.rename", "split": "train", "group": "0:1:politeness"}
+{"text": "Please rename sandbox\\draft.txt to final.txt", "label": "fs.rename", "split": "train", "group": "3:0:politeness"}
+{"text": "rename budget.csv to memo.txt", "label": "fs.rename", "split": "train", "group": "0:2"}
+{"text": "rename notes.txt to memo.txt", "label": "fs.rename", "split": "train", "group": "1:0"}
+{"text": "rename report.pdf to renamed.dat", "label": "fs.rename", "split": "train", "group": "0:1"}
+{"text": "rename sandbox\\draft.txt to final.txt", "label": "fs.rename", "split": "train", "group": "3:0"}
+{"text": "rename sandbox\\notes.txt to final-report.txt", "label": "fs.rename", "split": "train", "group": "0:3"}
+{"text": "rename the file report.pdf as final-report.pdf", "label": "fs.rename", "split": "train", "group": "2:0"}
+{"text": "rename the folder receipts to archive", "label": "fs.rename", "split": "train", "group": "4:0"}
+{"text": "Please find pdf files in downloads", "label": "fs.search", "split": "train", "group": "4:0:politeness"}
+{"text": "Please look for files named budget in sandbox", "label": "fs.search", "split": "train", "group": "2:1:politeness"}
+{"text": "Please look for files named report in sandbox", "label": "fs.search", "split": "train", "group": "2:0:politeness"}
+{"text": "Please search documents for budget", "label": "fs.search", "split": "train", "group": "1:1:politeness"}
+{"text": "Please search documents for report", "label": "fs.search", "split": "train", "group": "1:0:politeness"}
+{"text": "Please search sandbox for files containing budget", "label": "fs.search", "split": "train", "group": "3:1:politeness"}
+{"text": "find budget files in downloads", "label": "fs.search", "split": "train", "group": "0:1"}
+{"text": "find report files in downloads", "label": "fs.search", "split": "train", "group": "0:0"}
+{"text": "look for files named budget in sandbox", "label": "fs.search", "split": "train", "group": "2:1"}
+{"text": "look for files named report in sandbox", "label": "fs.search", "split": "train", "group": "2:0"}
+{"text": "search documents for budget", "label": "fs.search", "split": "train", "group": "1:1"}
+{"text": "search documents for invoice", "label": "fs.search", "split": "train", "group": "1:2"}
+{"text": "search documents for report", "label": "fs.search", "split": "train", "group": "1:0"}
+{"text": "search sandbox for files containing invoice", "label": "fs.search", "split": "train", "group": "3:2"}
+{"text": "revert the last action", "label": "fs.undo_last", "split": "train", "group": "4:0"}
+{"text": "revert the previous change", "label": "fs.undo_last", "split": "train", "group": "2:0"}
+{"text": "undo", "label": "fs.undo_last", "split": "train", "group": "0:0"}
+{"text": "undo last operation", "label": "fs.undo_last", "split": "train", "group": "3:0"}
+{"text": "Please create a file report.pdf in sandbox with content Hello world", "label": "fs.write", "split": "train", "group": "0:1:politeness"}
+{"text": "Please make a file called draft.txt with content draft text", "label": "fs.write", "split": "train", "group": "4:0:politeness"}
+{"text": "Please save draft text into notes.txt", "label": "fs.write", "split": "train", "group": "2:0:politeness"}
+{"text": "Please write draft text to sandbox\\draft.txt", "label": "fs.write", "split": "train", "group": "1:0:politeness"}
+{"text": "create a file budget.csv in sandbox with content meeting notes", "label": "fs.write", "split": "train", "group": "0:2"}
+{"text": "create a file notes.txt in sandbox with content draft text", "label": "fs.write", "split": "train", "group": "0:0"}
+{"text": "create a file report.pdf in sandbox with content Hello world", "label": "fs.write", "split": "train", "group": "0:1"}
+{"text": "create a text file notes.txt in sandbox with content Hello world", "label": "fs.write", "split": "train", "group": "3:1"}
+{"text": "create a text file notes.txt in sandbox with content draft text", "label": "fs.write", "split": "train", "group": "3:0"}
+{"text": "create a text file notes.txt in sandbox with content meeting notes", "label": "fs.write", "split": "train", "group": "3:2"}
+{"text": "make a file called draft.txt with content Hello world", "label": "fs.write", "split": "train", "group": "4:1"}
+{"text": "make a file called draft.txt with content alpha beta gamma", "label": "fs.write", "split": "train", "group": "4:3"}
+{"text": "make a file called draft.txt with content draft text", "label": "fs.write", "split": "train", "group": "4:0"}
+{"text": "make a file called draft.txt with content meeting notes", "label": "fs.write", "split": "train", "group": "4:2"}
+{"text": "save Hello world into report.pdf", "label": "fs.write", "split": "train", "group": "2:1"}
+{"text": "save meeting notes into budget.csv", "label": "fs.write", "split": "train", "group": "2:2"}
+{"text": "write draft text to sandbox\\draft.txt", "label": "fs.write", "split": "train", "group": "1:0"}
+{"text": "Please compress archive into sandbox\\archive.zip", "label": "fs.zip", "split": "train", "group": "1:0:politeness"}
+{"text": "Please compress sandbox\\reports into sandbox\\archive.zip", "label": "fs.zip", "split": "train", "group": "1:1:politeness"}
+{"text": "Please create a zip of sandbox\\reports", "label": "fs.zip", "split": "train", "group": "4:0:politeness"}
+{"text": "Please zip sandbox\\reports to sandbox\\reports.zip", "label": "fs.zip", "split": "train", "group": "0:0:politeness"}
+{"text": "compress archive into sandbox\\archive.zip", "label": "fs.zip", "split": "train", "group": "1:0"}
+{"text": "compress reports into sandbox\\archive.zip", "label": "fs.zip", "split": "train", "group": "1:2"}
+{"text": "zip sandbox\\reports to sandbox\\reports.zip", "label": "fs.zip", "split": "train", "group": "0:0"}
+{"text": "Please add a training example \"list files in downloads\" as fs.list", "label": "memory.add_example", "split": "train", "group": "3:0:politeness"}
+{"text": "Please add training example \"battery status\" as system.battery", "label": "memory.add_example", "split": "train", "group": "2:0:politeness"}
+{"text": "Please add training example \"open notepad\" as apps.launch", "label": "memory.add_example", "split": "train", "group": "0:0:politeness"}
+{"text": "Please remember a training example \"take a screenshot\" as desktop.screenshot", "label": "memory.add_example", "split": "train", "group": "1:0:politeness"}
+{"text": "remember training example \"undo\" as fs.undo_last", "label": "memory.add_example", "split": "train", "group": "4:0"}
+{"text": "Please export memory to sandbox\\memory.json", "label": "memory.export", "split": "train", "group": "0:0:politeness"}
+{"text": "Please save my memory to sandbox\\mem.json", "label": "memory.export", "split": "train", "group": "1:0:politeness"}
+{"text": "export memory to sandbox\\memory.json", "label": "memory.export", "split": "train", "group": "0:0"}
+{"text": "Please delete memory key browser", "label": "memory.forget", "split": "train", "group": "1:1:politeness"}
+{"text": "Please delete memory key editor", "label": "memory.forget", "split": "train", "group": "1:0:politeness"}
+{"text": "Please delete the preference browser", "label": "memory.forget", "split": "train", "group": "3:1:politeness"}
+{"text": "Please delete the preference editor", "label": "memory.forget", "split": "train", "group": "3:0:politeness"}
+{"text": "Please forget everything", "label": "memory.forget", "split": "train", "group": "4:0:politeness"}
+{"text": "Please forget my browser", "label": "memory.forget", "split": "train", "group": "0:1:politeness"}
+{"text": "Please forget my editor", "label": "memory.forget", "split": "train", "group": "0:0:politeness"}
+{"text": "Please forget the preference editor", "label": "memory.forget", "split": "train", "group": "2:0:politeness"}
+{"text": "delete memory key browser", "label": "memory.forget", "split": "train", "group": "1:1"}
+{"text": "delete memory key editor", "label": "memory.forget", "split": "train", "group": "1:0"}
+{"text": "delete memory key project folder", "label": "memory.forget", "split": "train", "group": "1:2"}
+{"text": "delete the preference editor", "label": "memory.forget", "split": "train", "group": "3:0"}
+{"text": "forget everything", "label": "memory.forget", "split": "train", "group": "4:0"}
+{"text": "forget my browser", "label": "memory.forget", "split": "train", "group": "0:1"}
+{"text": "forget my project folder", "label": "memory.forget", "split": "train", "group": "0:2"}
+{"text": "forget the preference browser", "label": "memory.forget", "split": "train", "group": "2:1"}
+{"text": "forget the preference editor", "label": "memory.forget", "split": "train", "group": "2:0"}
+{"text": "forget the preference project folder", "label": "memory.forget", "split": "train", "group": "2:2"}
+{"text": "Please list my preferences", "label": "memory.list", "split": "train", "group": "1:0:politeness"}
+{"text": "Please show memory", "label": "memory.list", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show my preferences", "label": "memory.list", "split": "train", "group": "3:0:politeness"}
+{"text": "Please what do you remember", "label": "memory.list", "split": "train", "group": "0:0:politeness"}
+{"text": "Please what preferences do you have", "label": "memory.list", "split": "train", "group": "4:0:politeness"}
+{"text": "list my preferences", "label": "memory.list", "split": "train", "group": "1:0"}
+{"text": "show memory", "label": "memory.list", "split": "train", "group": "2:0"}
+{"text": "show my preferences", "label": "memory.list", "split": "train", "group": "3:0"}
+{"text": "what do you remember", "label": "memory.list", "split": "train", "group": "0:0"}
+{"text": "Please keep in mind that my browser is notepad", "label": "memory.remember", "split": "train", "group": "3:1:politeness"}
+{"text": "Please note that my browser is notepad", "label": "memory.remember", "split": "train", "group": "4:1:politeness"}
+{"text": "Please note that my editor is sandbox", "label": "memory.remember", "split": "train", "group": "4:0:politeness"}
+{"text": "Please remember that my browser is notepad", "label": "memory.remember", "split": "train", "group": "0:1:politeness"}
+{"text": "Please remember that my editor is sandbox", "label": "memory.remember", "split": "train", "group": "0:0:politeness"}
+{"text": "Please remember the browser is notepad", "label": "memory.remember", "split": "train", "group": "2:1:politeness"}
+{"text": "keep in mind that my browser is notepad", "label": "memory.remember", "split": "train", "group": "3:1"}
+{"text": "keep in mind that my editor is sandbox", "label": "memory.remember", "split": "train", "group": "3:0"}
+{"text": "keep in mind that my project folder is firefox", "label": "memory.remember", "split": "train", "group": "3:2"}
+{"text": "remember my browser is notepad", "label": "memory.remember", "split": "train", "group": "1:1"}
+{"text": "remember my editor is sandbox", "label": "memory.remember", "split": "train", "group": "1:0"}
+{"text": "remember my project folder is firefox", "label": "memory.remember", "split": "train", "group": "1:2"}
+{"text": "remember that my editor is sandbox", "label": "memory.remember", "split": "train", "group": "0:0"}
+{"text": "remember that my project folder is firefox", "label": "memory.remember", "split": "train", "group": "0:2"}
+{"text": "remember the browser is notepad", "label": "memory.remember", "split": "train", "group": "2:1"}
+{"text": "remember the editor is sandbox", "label": "memory.remember", "split": "train", "group": "2:0"}
+{"text": "Please disable memory", "label": "memory.set_enabled", "split": "train", "group": "0:0:politeness"}
+{"text": "Please disable the memory", "label": "memory.set_enabled", "split": "train", "group": "4:0:politeness"}
+{"text": "Please enable memory", "label": "memory.set_enabled", "split": "train", "group": "1:0:politeness"}
+{"text": "Please turn on memory", "label": "memory.set_enabled", "split": "train", "group": "3:0:politeness"}
+{"text": "disable memory", "label": "memory.set_enabled", "split": "train", "group": "0:0"}
+{"text": "enable memory", "label": "memory.set_enabled", "split": "train", "group": "1:0"}
+{"text": "turn off memory", "label": "memory.set_enabled", "split": "train", "group": "2:0"}
+{"text": "turn on memory", "label": "memory.set_enabled", "split": "train", "group": "3:0"}
+{"text": "Please assistant memory status", "label": "memory.status", "split": "train", "group": "1:0:politeness"}
+{"text": "Please is memory enabled", "label": "memory.status", "split": "train", "group": "3:0:politeness"}
+{"text": "Please memory status", "label": "memory.status", "split": "train", "group": "0:0:politeness"}
+{"text": "Please show memory status", "label": "memory.status", "split": "train", "group": "2:0:politeness"}
+{"text": "Please status of local memory", "label": "memory.status", "split": "train", "group": "4:0:politeness"}
+{"text": "assistant memory status", "label": "memory.status", "split": "train", "group": "1:0"}
+{"text": "is memory enabled", "label": "memory.status", "split": "train", "group": "3:0"}
+{"text": "status of local memory", "label": "memory.status", "split": "train", "group": "4:0"}
+{"text": "Please audio devices", "label": "system.audio_devices", "split": "train", "group": "0:0:politeness"}
+{"text": "Please sound status", "label": "system.audio_devices", "split": "train", "group": "1:0:politeness"}
+{"text": "list audio devices", "label": "system.audio_devices", "split": "train", "group": "2:0"}
+{"text": "show sound devices", "label": "system.audio_devices", "split": "train", "group": "3:0"}
+{"text": "what audio devices are available", "label": "system.audio_devices", "split": "train", "group": "4:0"}
+{"text": "Please battery status", "label": "system.battery", "split": "train", "group": "0:0:politeness"}
+{"text": "Please show battery status", "label": "system.battery", "split": "train", "group": "3:0:politeness"}
+{"text": "battery status", "label": "system.battery", "split": "train", "group": "0:0"}
+{"text": "how much battery is left", "label": "system.battery", "split": "train", "group": "4:0"}
+{"text": "show battery status", "label": "system.battery", "split": "train", "group": "3:0"}
+{"text": "Please give me a system report", "label": "system.info", "split": "train", "group": "4:0:politeness"}
+{"text": "Please system info", "label": "system.info", "split": "train", "group": "0:0:politeness"}
+{"text": "Please what are my computer specifications", "label": "system.info", "split": "train", "group": "3:0:politeness"}
+{"text": "computer specs", "label": "system.info", "split": "train", "group": "1:0"}
+{"text": "give me a system report", "label": "system.info", "split": "train", "group": "4:0"}
+{"text": "what are my computer specifications", "label": "system.info", "split": "train", "group": "3:0"}
+{"text": "Please media control next track", "label": "system.media_control", "split": "train", "group": "0:0:politeness"}
+{"text": "Please mute", "label": "system.media_control", "split": "train", "group": "1:0:politeness"}
+{"text": "Please next track", "label": "system.media_control", "split": "train", "group": "2:0:politeness"}
+{"text": "Please pause", "label": "system.media_control", "split": "train", "group": "4:0:politeness"}
+{"text": "media control mute", "label": "system.media_control", "split": "train", "group": "0:3"}
+{"text": "media control next track", "label": "system.media_control", "split": "train", "group": "0:0"}
+{"text": "media control volume up", "label": "system.media_control", "split": "train", "group": "0:1"}
+{"text": "mute", "label": "system.media_control", "split": "train", "group": "1:0"}
+{"text": "next track", "label": "system.media_control", "split": "train", "group": "2:0"}
+{"text": "volume up", "label": "system.media_control", "split": "train", "group": "3:0"}
+{"text": "Please are you offline", "label": "system.offline_status", "split": "train", "group": "1:0:politeness"}
+{"text": "Please is offline mode active", "label": "system.offline_status", "split": "train", "group": "4:0:politeness"}
+{"text": "Please network guard status", "label": "system.offline_status", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show offline mode", "label": "system.offline_status", "split": "train", "group": "3:0:politeness"}
+{"text": "is offline mode active", "label": "system.offline_status", "split": "train", "group": "4:0"}
+{"text": "network guard status", "label": "system.offline_status", "split": "train", "group": "2:0"}
+{"text": "offline status", "label": "system.offline_status", "split": "train", "group": "0:0"}
+{"text": "show offline mode", "label": "system.offline_status", "split": "train", "group": "3:0"}
+{"text": "Please highest cpu processes", "label": "system.top_processes", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show the top processes", "label": "system.top_processes", "split": "train", "group": "3:0:politeness"}
+{"text": "Please what processes are using cpu", "label": "system.top_processes", "split": "train", "group": "4:0:politeness"}
+{"text": "highest cpu processes", "label": "system.top_processes", "split": "train", "group": "2:0"}
+{"text": "show the top processes", "label": "system.top_processes", "split": "train", "group": "3:0"}
+{"text": "top processes", "label": "system.top_processes", "split": "train", "group": "0:0"}
+{"text": "what is using memory", "label": "system.top_processes", "split": "train", "group": "1:0"}
+{"text": "what processes are using cpu", "label": "system.top_processes", "split": "train", "group": "4:0"}
+{"text": "Please show voice capabilities", "label": "voice.capabilities", "split": "train", "group": "2:0:politeness"}
+{"text": "Please speech capabilities", "label": "voice.capabilities", "split": "train", "group": "1:0:politeness"}
+{"text": "Please tell me the voice limitations", "label": "voice.capabilities", "split": "train", "group": "4:0:politeness"}
+{"text": "Please voice capabilities", "label": "voice.capabilities", "split": "train", "group": "0:0:politeness"}
+{"text": "Please what speech features are available", "label": "voice.capabilities", "split": "train", "group": "3:0:politeness"}
+{"text": "show voice capabilities", "label": "voice.capabilities", "split": "train", "group": "2:0"}
+{"text": "voice capabilities", "label": "voice.capabilities", "split": "train", "group": "0:0"}
+{"text": "Please list microphones", "label": "voice.list_devices", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show speech devices", "label": "voice.list_devices", "split": "train", "group": "3:0:politeness"}
+{"text": "Please voice devices", "label": "voice.list_devices", "split": "train", "group": "0:0:politeness"}
+{"text": "list microphones", "label": "voice.list_devices", "split": "train", "group": "2:0"}
+{"text": "list the audio input and output devices", "label": "voice.list_devices", "split": "train", "group": "4:0"}
+{"text": "show speech devices", "label": "voice.list_devices", "split": "train", "group": "3:0"}
+{"text": "voice devices", "label": "voice.list_devices", "split": "train", "group": "0:0"}
+{"text": "Please read aloud good morning", "label": "voice.speak", "split": "train", "group": "4:1:politeness"}
+{"text": "Please say good morning", "label": "voice.speak", "split": "train", "group": "1:1:politeness"}
+{"text": "Please say hello there", "label": "voice.speak", "split": "train", "group": "1:0:politeness"}
+{"text": "Please say the words hello there", "label": "voice.speak", "split": "train", "group": "3:0:politeness"}
+{"text": "Please speak hello there", "label": "voice.speak", "split": "train", "group": "0:0:politeness"}
+{"text": "Please speak the text good morning", "label": "voice.speak", "split": "train", "group": "2:1:politeness"}
+{"text": "Please speak the text hello there", "label": "voice.speak", "split": "train", "group": "2:0:politeness"}
+{"text": "read aloud good morning", "label": "voice.speak", "split": "train", "group": "4:1"}
+{"text": "read aloud the task is complete", "label": "voice.speak", "split": "train", "group": "4:2"}
+{"text": "say good morning", "label": "voice.speak", "split": "train", "group": "1:1"}
+{"text": "say hello there", "label": "voice.speak", "split": "train", "group": "1:0"}
+{"text": "say the task is complete", "label": "voice.speak", "split": "train", "group": "1:2"}
+{"text": "say the words the task is complete", "label": "voice.speak", "split": "train", "group": "3:2"}
+{"text": "speak good morning", "label": "voice.speak", "split": "train", "group": "0:1"}
+{"text": "speak the task is complete", "label": "voice.speak", "split": "train", "group": "0:2"}
+{"text": "speak the text hello there", "label": "voice.speak", "split": "train", "group": "2:0"}
+{"text": "speak the text the task is complete", "label": "voice.speak", "split": "train", "group": "2:2"}
+{"text": "Please is voice input available", "label": "voice.status", "split": "train", "group": "3:0:politeness"}
+{"text": "Please speech status", "label": "voice.status", "split": "train", "group": "1:0:politeness"}
+{"text": "is voice input available", "label": "voice.status", "split": "train", "group": "3:0"}
+{"text": "show voice status", "label": "voice.status", "split": "train", "group": "2:0"}
+{"text": "speech status", "label": "voice.status", "split": "train", "group": "1:0"}
+{"text": "Please check bluetooth", "label": "windows.bluetooth_status", "split": "train", "group": "4:0:politeness"}
+{"text": "Please show bluetooth status", "label": "windows.bluetooth_status", "split": "train", "group": "3:0:politeness"}
+{"text": "bluetooth state", "label": "windows.bluetooth_status", "split": "train", "group": "2:0"}
+{"text": "check bluetooth", "label": "windows.bluetooth_status", "split": "train", "group": "4:0"}
+{"text": "show bluetooth status", "label": "windows.bluetooth_status", "split": "train", "group": "3:0"}
+{"text": "Please display info", "label": "windows.display_info", "split": "train", "group": "0:0:politeness"}
+{"text": "Please screen resolution", "label": "windows.display_info", "split": "train", "group": "1:0:politeness"}
+{"text": "Please show monitor status", "label": "windows.display_info", "split": "train", "group": "2:0:politeness"}
+{"text": "Please what is my screen resolution", "label": "windows.display_info", "split": "train", "group": "4:0:politeness"}
+{"text": "display info", "label": "windows.display_info", "split": "train", "group": "0:0"}
+{"text": "show monitor status", "label": "windows.display_info", "split": "train", "group": "2:0"}
+{"text": "what is my screen resolution", "label": "windows.display_info", "split": "train", "group": "4:0"}
+{"text": "Please is the network connected", "label": "windows.network_status", "split": "train", "group": "4:0:politeness"}
+{"text": "Please show network status", "label": "windows.network_status", "split": "train", "group": "3:0:politeness"}
+{"text": "internet status", "label": "windows.network_status", "split": "train", "group": "2:0"}
+{"text": "network status", "label": "windows.network_status", "split": "train", "group": "0:0"}
+{"text": "show network status", "label": "windows.network_status", "split": "train", "group": "3:0"}
+{"text": "wifi status", "label": "windows.network_status", "split": "train", "group": "1:0"}
+{"text": "Please open documents folder", "label": "windows.open_folder", "split": "train", "group": "1:0:politeness"}
+{"text": "Please show the desktop folder", "label": "windows.open_folder", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show the documents directory", "label": "windows.open_folder", "split": "train", "group": "4:0:politeness"}
+{"text": "open documents folder", "label": "windows.open_folder", "split": "train", "group": "1:0"}
+{"text": "open the sandbox folder", "label": "windows.open_folder", "split": "train", "group": "3:0"}
+{"text": "show the desktop folder", "label": "windows.open_folder", "split": "train", "group": "2:0"}
+{"text": "Please launch windows settings", "label": "windows.open_settings", "split": "train", "group": "4:0:politeness"}
+{"text": "Please open display settings", "label": "windows.open_settings", "split": "train", "group": "1:0:politeness"}
+{"text": "Please open power settings", "label": "windows.open_settings", "split": "train", "group": "3:1:politeness"}
+{"text": "Please open settings", "label": "windows.open_settings", "split": "train", "group": "0:0:politeness"}
+{"text": "Please show bluetooth settings", "label": "windows.open_settings", "split": "train", "group": "2:0:politeness"}
+{"text": "launch windows settings", "label": "windows.open_settings", "split": "train", "group": "4:0"}
+{"text": "open network settings", "label": "windows.open_settings", "split": "train", "group": "3:0"}
+{"text": "open power settings", "label": "windows.open_settings", "split": "train", "group": "3:1"}
+{"text": "open settings", "label": "windows.open_settings", "split": "train", "group": "0:0"}
+{"text": "show bluetooth settings", "label": "windows.open_settings", "split": "train", "group": "2:0"}
+{"text": "Please power plan", "label": "windows.power_status", "split": "train", "group": "1:0:politeness"}
+{"text": "Please power status", "label": "windows.power_status", "split": "train", "group": "0:0:politeness"}
+{"text": "Please sleep settings", "label": "windows.power_status", "split": "train", "group": "2:0:politeness"}
+{"text": "Please what is the power status", "label": "windows.power_status", "split": "train", "group": "4:0:politeness"}
+{"text": "power plan", "label": "windows.power_status", "split": "train", "group": "1:0"}
+{"text": "sleep settings", "label": "windows.power_status", "split": "train", "group": "2:0"}
+{"text": "Please list startup entries", "label": "windows.startup_list", "split": "train", "group": "1:0:politeness"}
+{"text": "Please list startup programs", "label": "windows.startup_list", "split": "train", "group": "4:0:politeness"}
+{"text": "Please show startup applications", "label": "windows.startup_list", "split": "train", "group": "2:0:politeness"}
+{"text": "Please show startup apps", "label": "windows.startup_list", "split": "train", "group": "3:0:politeness"}
+{"text": "list startup programs", "label": "windows.startup_list", "split": "train", "group": "4:0"}
+{"text": "show startup applications", "label": "windows.startup_list", "split": "train", "group": "2:0"}
+{"text": "show startup apps", "label": "windows.startup_list", "split": "train", "group": "3:0"}

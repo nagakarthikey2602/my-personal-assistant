@@ -1,0 +1,118 @@
+{"text": "application capabilities", "label": "apps.capabilities", "split": "validation", "group": "1:0"}
+{"text": "Please quit explorer", "label": "apps.close", "split": "validation", "group": "1:0:politeness"}
+{"text": "Please quit notepad", "label": "apps.close", "split": "validation", "group": "1:1:politeness"}
+{"text": "Please terminate explorer", "label": "apps.close", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please terminate notepad", "label": "apps.close", "split": "validation", "group": "2:1:politeness"}
+{"text": "close notepad", "label": "apps.close", "split": "validation", "group": "0:1"}
+{"text": "close the paint app", "label": "apps.close", "split": "validation", "group": "3:3"}
+{"text": "quit calculator", "label": "apps.close", "split": "validation", "group": "1:2"}
+{"text": "terminate notepad", "label": "apps.close", "split": "validation", "group": "2:1"}
+{"text": "Please switch to explorer", "label": "apps.focus_window", "split": "validation", "group": "1:0:politeness"}
+{"text": "bring paint to the front", "label": "apps.focus_window", "split": "validation", "group": "2:3"}
+{"text": "focus calculator", "label": "apps.focus_window", "split": "validation", "group": "0:2"}
+{"text": "switch to the calculator window", "label": "apps.focus_window", "split": "validation", "group": "4:2"}
+{"text": "Please launch explorer", "label": "apps.launch", "split": "validation", "group": "1:0:politeness"}
+{"text": "launch paint", "label": "apps.launch", "split": "validation", "group": "1:3"}
+{"text": "open calculator", "label": "apps.launch", "split": "validation", "group": "0:2"}
+{"text": "open paint", "label": "apps.launch", "split": "validation", "group": "0:3"}
+{"text": "start explorer", "label": "apps.launch", "split": "validation", "group": "2:0"}
+{"text": "Please list installed apps", "label": "apps.list_installed", "split": "validation", "group": "0:0:politeness"}
+{"text": "Please what applications are installed", "label": "apps.list_installed", "split": "validation", "group": "1:0:politeness"}
+{"text": "show installed programs", "label": "apps.list_installed", "split": "validation", "group": "2:0"}
+{"text": "what applications are installed", "label": "apps.list_installed", "split": "validation", "group": "1:0"}
+{"text": "Please what windows are open", "label": "apps.list_windows", "split": "validation", "group": "1:0:politeness"}
+{"text": "show windows", "label": "apps.list_windows", "split": "validation", "group": "2:0"}
+{"text": "type good morning in notepad", "label": "apps.type_text", "split": "validation", "group": "1:0"}
+{"text": "browse to https://example.com", "label": "browser.open", "split": "validation", "group": "4:0"}
+{"text": "what is on the clipboard", "label": "desktop.clipboard_get", "split": "validation", "group": "1:0"}
+{"text": "Please put the text hello on the clipboard", "label": "desktop.clipboard_set", "split": "validation", "group": "1:0:politeness"}
+{"text": "Please set the clipboard to hello", "label": "desktop.clipboard_set", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please write hello to the clipboard", "label": "desktop.clipboard_set", "split": "validation", "group": "4:0:politeness"}
+{"text": "put the text hello on the clipboard", "label": "desktop.clipboard_set", "split": "validation", "group": "1:0"}
+{"text": "analyze log file sandbox\\app.log", "label": "dev.analyze_log", "split": "validation", "group": "4:0"}
+{"text": "analyze the log sandbox\\errors.log", "label": "dev.analyze_log", "split": "validation", "group": "0:1"}
+{"text": "run compileall", "label": "dev.run", "split": "validation", "group": "5:0"}
+{"text": "run pytest", "label": "dev.run", "split": "validation", "group": "1:0"}
+{"text": "developer status", "label": "dev.status", "split": "validation", "group": "1:0"}
+{"text": "Please create a folder sandbox\\reports in sandbox", "label": "fs.create_folder", "split": "validation", "group": "0:1:politeness"}
+{"text": "Please make a directory called archive in downloads", "label": "fs.create_folder", "split": "validation", "group": "1:0:politeness"}
+{"text": "create a folder receipts in sandbox", "label": "fs.create_folder", "split": "validation", "group": "0:3"}
+{"text": "create the folder reports in documents", "label": "fs.create_folder", "split": "validation", "group": "2:2"}
+{"text": "make a new folder named project in sandbox", "label": "fs.create_folder", "split": "validation", "group": "3:0"}
+{"text": "find duplicate files in downloads", "label": "fs.duplicates", "split": "validation", "group": "0:0"}
+{"text": "extract sandbox\\reports.zip to sandbox\\out", "label": "fs.extract", "split": "validation", "group": "0:0"}
+{"text": "Please inventory of sandbox", "label": "fs.inventory", "split": "validation", "group": "4:0:politeness"}
+{"text": "Please show me what is in the desktop folder", "label": "fs.list", "split": "validation", "group": "3:0:politeness"}
+{"text": "Please move the file budget.csv to downloads", "label": "fs.move", "split": "validation", "group": "4:0:politeness"}
+{"text": "move budget.csv to sandbox\\archive", "label": "fs.move", "split": "validation", "group": "0:2"}
+{"text": "move notes.txt into the archive folder", "label": "fs.move", "split": "validation", "group": "3:0"}
+{"text": "move the file budget.csv to downloads", "label": "fs.move", "split": "validation", "group": "4:0"}
+{"text": "transfer report.pdf into sandbox\\archive", "label": "fs.move", "split": "validation", "group": "1:1"}
+{"text": "transfer sandbox\\notes.txt into sandbox\\archive", "label": "fs.move", "split": "validation", "group": "1:3"}
+{"text": "Please quarantine notes.txt", "label": "fs.quarantine_delete", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please quarantine report.pdf", "label": "fs.quarantine_delete", "split": "validation", "group": "2:1:politeness"}
+{"text": "quarantine report.pdf", "label": "fs.quarantine_delete", "split": "validation", "group": "2:1"}
+{"text": "remove the file sandbox\\notes.txt", "label": "fs.quarantine_delete", "split": "validation", "group": "1:3"}
+{"text": "Please open the file notes.txt", "label": "fs.read", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please open the file report.pdf", "label": "fs.read", "split": "validation", "group": "2:1:politeness"}
+{"text": "open the file budget.csv", "label": "fs.read", "split": "validation", "group": "2:2"}
+{"text": "read budget.csv", "label": "fs.read", "split": "validation", "group": "0:2"}
+{"text": "read the document budget.csv", "label": "fs.read", "split": "validation", "group": "4:2"}
+{"text": "read the document notes.txt", "label": "fs.read", "split": "validation", "group": "4:0"}
+{"text": "Please find report files in downloads", "label": "fs.search", "split": "validation", "group": "0:0:politeness"}
+{"text": "find invoice files in downloads", "label": "fs.search", "split": "validation", "group": "0:2"}
+{"text": "look for files named invoice in sandbox", "label": "fs.search", "split": "validation", "group": "2:2"}
+{"text": "search sandbox for files containing report", "label": "fs.search", "split": "validation", "group": "3:0"}
+{"text": "Please create a file notes.txt in sandbox with content draft text", "label": "fs.write", "split": "validation", "group": "0:0:politeness"}
+{"text": "Please create a text file notes.txt in sandbox with content Hello world", "label": "fs.write", "split": "validation", "group": "3:1:politeness"}
+{"text": "Please make a file called draft.txt with content Hello world", "label": "fs.write", "split": "validation", "group": "4:1:politeness"}
+{"text": "Please save Hello world into report.pdf", "label": "fs.write", "split": "validation", "group": "2:1:politeness"}
+{"text": "create a file sandbox\\notes.txt in sandbox with content alpha beta gamma", "label": "fs.write", "split": "validation", "group": "0:3"}
+{"text": "save draft text into notes.txt", "label": "fs.write", "split": "validation", "group": "2:0"}
+{"text": "write meeting notes to sandbox\\draft.txt", "label": "fs.write", "split": "validation", "group": "1:2"}
+{"text": "Please archive documents to sandbox\\documents.zip", "label": "fs.zip", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please zip the folder reports", "label": "fs.zip", "split": "validation", "group": "3:0:politeness"}
+{"text": "archive documents to sandbox\\documents.zip", "label": "fs.zip", "split": "validation", "group": "2:0"}
+{"text": "compress receipts into sandbox\\archive.zip", "label": "fs.zip", "split": "validation", "group": "1:3"}
+{"text": "zip the folder reports", "label": "fs.zip", "split": "validation", "group": "3:0"}
+{"text": "add training example \"battery status\" as system.battery", "label": "memory.add_example", "split": "validation", "group": "2:0"}
+{"text": "add training example \"open notepad\" as apps.launch", "label": "memory.add_example", "split": "validation", "group": "0:0"}
+{"text": "remember a training example \"take a screenshot\" as desktop.screenshot", "label": "memory.add_example", "split": "validation", "group": "1:0"}
+{"text": "save my memory to sandbox\\mem.json", "label": "memory.export", "split": "validation", "group": "1:0"}
+{"text": "Please forget the preference browser", "label": "memory.forget", "split": "validation", "group": "2:1:politeness"}
+{"text": "delete the preference project folder", "label": "memory.forget", "split": "validation", "group": "3:2"}
+{"text": "what preferences do you have", "label": "memory.list", "split": "validation", "group": "4:0"}
+{"text": "Please remember my browser is notepad", "label": "memory.remember", "split": "validation", "group": "1:1:politeness"}
+{"text": "note that my editor is sandbox", "label": "memory.remember", "split": "validation", "group": "4:0"}
+{"text": "note that my project folder is firefox", "label": "memory.remember", "split": "validation", "group": "4:2"}
+{"text": "remember the project folder is firefox", "label": "memory.remember", "split": "validation", "group": "2:2"}
+{"text": "Please turn off memory", "label": "memory.set_enabled", "split": "validation", "group": "2:0:politeness"}
+{"text": "show memory status", "label": "memory.status", "split": "validation", "group": "2:0"}
+{"text": "Please list audio devices", "label": "system.audio_devices", "split": "validation", "group": "2:0:politeness"}
+{"text": "sound status", "label": "system.audio_devices", "split": "validation", "group": "1:0"}
+{"text": "Please battery level", "label": "system.battery", "split": "validation", "group": "1:0:politeness"}
+{"text": "Please charge status", "label": "system.battery", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please how much battery is left", "label": "system.battery", "split": "validation", "group": "4:0:politeness"}
+{"text": "charge status", "label": "system.battery", "split": "validation", "group": "2:0"}
+{"text": "Please computer specs", "label": "system.info", "split": "validation", "group": "1:0:politeness"}
+{"text": "pause", "label": "system.media_control", "split": "validation", "group": "4:0"}
+{"text": "Please what is using memory", "label": "system.top_processes", "split": "validation", "group": "1:0:politeness"}
+{"text": "speech capabilities", "label": "voice.capabilities", "split": "validation", "group": "1:0"}
+{"text": "tell me the voice limitations", "label": "voice.capabilities", "split": "validation", "group": "4:0"}
+{"text": "Please list microphones and speakers", "label": "voice.list_devices", "split": "validation", "group": "1:0:politeness"}
+{"text": "list microphones and speakers", "label": "voice.list_devices", "split": "validation", "group": "1:0"}
+{"text": "Please say the words good morning", "label": "voice.speak", "split": "validation", "group": "3:1:politeness"}
+{"text": "speak hello there", "label": "voice.speak", "split": "validation", "group": "0:0"}
+{"text": "Please voice status", "label": "voice.status", "split": "validation", "group": "0:0:politeness"}
+{"text": "show speech status", "label": "voice.status", "split": "validation", "group": "4:0"}
+{"text": "voice status", "label": "voice.status", "split": "validation", "group": "0:0"}
+{"text": "Please bluetooth status", "label": "windows.bluetooth_status", "split": "validation", "group": "0:0:politeness"}
+{"text": "Please is bluetooth on", "label": "windows.bluetooth_status", "split": "validation", "group": "1:0:politeness"}
+{"text": "screen resolution", "label": "windows.display_info", "split": "validation", "group": "1:0"}
+{"text": "Please internet status", "label": "windows.network_status", "split": "validation", "group": "2:0:politeness"}
+{"text": "Please wifi status", "label": "windows.network_status", "split": "validation", "group": "1:0:politeness"}
+{"text": "Please open the downloads folder", "label": "windows.open_folder", "split": "validation", "group": "0:0:politeness"}
+{"text": "open the downloads folder", "label": "windows.open_folder", "split": "validation", "group": "0:0"}
+{"text": "open sound settings", "label": "windows.open_settings", "split": "validation", "group": "3:2"}
+{"text": "Please show the power plan", "label": "windows.power_status", "split": "validation", "group": "3:0:politeness"}
+{"text": "power status", "label": "windows.power_status", "split": "validation", "group": "0:0"}
