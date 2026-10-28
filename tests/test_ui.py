@@ -31,6 +31,10 @@ def test_window_constructs_routes_a_command_and_closes(make_assistant) -> None:
         assert "Local assistant ready" in window.transcript.get("1.0", "end")
         assert window.badges["offline"].cget("text") == "offline: strict"
         assert window.badges["memory"].cget("text") == "memory on"
+        assert window.badges["wake"].cget("text") == "wake: off"
+        assert window.wake_listener is None
+        assert "n/a" in window.wake_button.cget("text")
+        assert str(window.wake_button.cget("state")) == "disabled"
 
         window.submit("status")
         deadline = time.monotonic() + 10

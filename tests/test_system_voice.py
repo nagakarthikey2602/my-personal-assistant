@@ -77,7 +77,7 @@ def test_voice_status_capabilities_and_disabled_speech(tool) -> None:
     assert status.data["tts"]["configured_engine"] == "none"
     assert status.data["tts"]["available"] is False
     assert status.data["asr"]["engine"] == "none"
-    assert status.data["wake_word"]["implemented"] is False
+    assert status.data["wake_word"]["implemented"] is True
 
     devices = call("voice.list_devices")
     assert devices.status == "ok", devices.message
@@ -85,9 +85,12 @@ def test_voice_status_capabilities_and_disabled_speech(tool) -> None:
 
     capabilities = call("voice.capabilities")
     assert capabilities.status == "ok"
-    assert "general dictation" in capabilities.data["not_implemented"]
     assert "cloud STT/TTS" in capabilities.data["not_implemented"]
+    assert "speaker diarization" in capabilities.data["not_implemented"]
     assert "user-recorded MFCC/DTW phrase recognition" in capabilities.data["implemented"]
+    assert "optional local Vosk general English recognition" in capabilities.data["implemented"]
+    assert "optional local faster-whisper command recognition" in capabilities.data["implemented"]
+    assert "opt-in local wake-word listening ('hearty')" in capabilities.data["implemented"]
 
     spoken = call("voice.speak", text="This must not reach a speaker.")
     assert spoken.status == "error"

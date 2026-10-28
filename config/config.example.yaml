@@ -127,6 +127,11 @@ intelligence:
 speech:
   # "template" is a from-scratch closed-vocabulary recognizer using user-recorded
   # word templates (MFCC + DTW). It has no pretrained weights.
+  # "vosk" is an optional local pretrained Kaldi model that recognizes general
+  # English commands. It runs offline after a one-time model download.
+  # "whisper" is an optional local CTranslate2/Whisper model. It is usually more
+  # accurate on noisy audio but uses more CPU. Both run offline after a one-time
+  # model download and have no cloud fallback.
   asr_engine: template
   # "formant" is a deterministic, rule-based synthesizer with no learned model.
   # "sapi" uses Microsoft-pretrained voices and is disabled by policy. See MODEL_POLICY.md.
@@ -141,8 +146,36 @@ speech:
   template_threshold: 0.72
   template_margin: 0.08
   templates_dir: "<APP_ROOT>\\models\\speech_templates"
+  # Used only when asr_engine is "vosk". Install the model once with:
+  #   .venv\Scripts\python.exe scripts\install_voice_model.py
+  vosk_model_dir: "<APP_ROOT>\\models\\vosk\\vosk-model-small-en-us-0.15"
+  vosk_language: en-us
+  # Used only when asr_engine is "whisper" or wake_command_engine is "whisper".
+  # Install the model once with: scripts\install_whisper_model.py
+  whisper_model_dir: "<APP_ROOT>\\models\\whisper\\faster-whisper-tiny.en"
+  whisper_language: en
+  whisper_compute_type: int8
+  whisper_cpu_threads: 4
+  whisper_beam_size: 5
+  whisper_initial_prompt: ""
+  # Wake-word detection always uses the Vosk model above, even when general
+  # recognition uses Whisper. While enabled, the microphone remains open until
+  # the user stops the listener.
   wake_word_enabled: false
-  wake_word: "assistant"
+  wake_word: "hearty"
+  wake_word_aliases:
+    - hearty
+    - hardy
+    - harty
+    - heart y
+  # Commands outside the constrained wake grammar are transcribed by this local
+  # engine. "vosk" is the fallback; "whisper" is more accurate on noisy audio.
+  wake_command_engine: whisper
+  wake_command_seconds: 6.0
+  wake_command_phrases: []
+  wake_command_timeout: 10.0
+  wake_command_settle_seconds: 0.65
+  wake_ack_sound: true
   max_speech_seconds: 15
 
 diagnostics:

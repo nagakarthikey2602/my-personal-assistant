@@ -107,7 +107,12 @@ Common validation failures:
 
 - `app.offline_mode` must be `strict` or `advisory`;
 - `app.auto_approve_max_risk` must be 1-4;
-- `speech.asr_engine` must be `template` or `none`;
+- `speech.asr_engine` must be `template`, `vosk`, `whisper`, or `none`;
+- `speech.wake_command_engine` must be `whisper` or `vosk`;
+- `speech.wake_command_seconds` must be between 1 and 15 seconds;
+- `speech.wake_word_enabled: true` needs the Vosk runtime and model for wake
+  detection, but may use either engine for the command itself;
+- `speech.wake_word_aliases` must be a list of strings;
 - `speech.tts_engine` must be `formant`, `sapi`, or `none`;
 - `sapi` requires `speech.allow_os_pretrained_tts: true`;
 - file size limits must be between 1,000 and 100,000,000 bytes;
@@ -260,8 +265,9 @@ The default media app may not be running.
 
 ### `voice-templates: No user voice templates are installed`
 
-This is an expected warning after a normal setup. Voice input is optional. Record
-the phrases you want, explicitly:
+This is an expected warning when `speech.asr_engine: template` and no phrases
+have been recorded. Vosk mode does not need templates. To use template mode,
+record the phrases you want, explicitly:
 
 ```powershell
 .\.venv\Scripts\python.exe .\scripts\record_voice_templates.py --devices
@@ -271,6 +277,47 @@ the phrases you want, explicitly:
 The recorder asks for consent, uses the microphone only during each take, and
 stores MFCC features plus a manifest. It does not upload audio. Review the
 phrase list with `--list`; remove one with `--remove "exact phrase"`.
+
+### `voice-vosk` says the model is missing
+
+Install the optional local model once:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\install_voice_model.py
+.\.venv\Scripts\python.exe .\scripts\install_voice_model.py --check
+```
+
+Then choose `speech.asr_engine: vosk` or `whisper` and restart. The Vosk model is
+about 40 MB, Apache-2.0, and stored under `models\vosk`; the Whisper `tiny.en`
+model is about 75 MB, MIT, and stored under `models\whisper`. The running
+assistant never downloads either. If `vosk` or `faster-whisper` itself is
+missing, reinstall dependencies with `scripts\setup.ps1`.
+
+### `voice-whisper` says the model is missing
+
+Install the optional local command model once:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\install_whisper_model.py
+.\.venv\Scripts\python.exe .\scripts\install_whisper_model.py --check
+```
+
+The default `tiny.en` model is about 75 MB, MIT-licensed, and stored under
+`models\whisper`. The running assistant loads it with `local_files_only=True`;
+it never downloads weights. If the model is unavailable, wake commands fall back
+to Vosk rather than to a cloud recognizer.
+
+### The Whisper worker fails with `mkl_malloc` or OpenBLAS errors
+
+Vosk and CTranslate2 each carry a native OpenMP/MKL runtime. The application
+starts Whisper in a separate local process and sets `CT2_USE_MKL=0`,
+`OPENBLAS_NUM_THREADS=1`, and `OMP_NUM_THREADS=1` to keep startup reliable on
+Windows systems with a small commit limit or no page file. If model startup still
+fails, close memory-heavy applications and retry. This is a local allocation
+failure, not a network error; there is no fallback that sends audio elsewhere.
+The worker is preloaded when wake listening starts, so the first command is not
+delayed by model startup. Vosk itself loads one shared model per process for both
+wake detection and push-to-talk, so enabling both does not double its memory use.
 
 ### The microphone is unavailable
 
@@ -282,15 +329,42 @@ phrase list with `--list`; remove one with `--remove "exact phrase"`.
 
 The tests deliberately do not open the microphone.
 
-### Speech is not recognized
+### General speech is not recognized
+
+Vosk and Whisper recognize general English locally, but accuracy depends on the
+model, microphone quality, distance, and background noise. The installed
+configuration uses Vosk's constrained grammar for wake detection and the local
+Whisper `tiny.en` model for the command. Speak a complete command such as “open
+notepad” or “take a screenshot”. The assistant does not guess when no text is
+returned, and it never falls back to a cloud recognizer. If the model returns
+unrelated text, the microphone is probably picking up loud ambient audio rather
+than your voice; try a headset or quieter room.
 
 Template ASR is **closed vocabulary**, not dictation. It can only match phrases
 you recorded. Improve results by recording 2-4 clean takes per phrase, speaking
 at a similar distance and pace, reducing background noise, and using the exact
 phrase. The recognizer rejects low-confidence or ambiguous matches instead of
 guessing. Adjust `speech.template_threshold` / `template_margin` only after
-recording more data; loosening them increases false matches. There is no wake
-word or continuous listening.
+recording more data; loosening them increases false matches.
+
+### The wake word does not trigger
+
+- Wake detection needs the installed Vosk model even when commands use Whisper.
+  Enable listening with the `Wake` button, `--wake`, or
+  `speech.wake_word_enabled: true`.
+- Say “hearty” followed by a short pause, then the command. The small model often
+  transcribes it as “hardy”; both forms and several aliases are accepted.
+- Wake detection uses a constrained grammar rather than open-vocabulary Vosk,
+  because open decoding cannot keep up with live audio on slower CPUs.
+- Watch the badge: `wake: loading` means the local command model is starting;
+  `wake: listening` means the microphone is open; `wake: busy` means a command or
+  speech output is running, and listening resumes afterwards.
+- The listener pauses during push-to-talk and typed commands by design to avoid
+  recording its own output.
+- Check the transcript for a wake-word error, especially a missing model or
+  microphone privacy block.
+- Stop the listener with `Wake: off` or the kill switch. Only one application
+  should hold the microphone in shared mode at a time.
 
 ### Speech output is unavailable or sounds robotic
 
@@ -396,11 +470,18 @@ If Tkinter or the desktop session is unavailable, use the console. A remote or
 service session may not have an interactive desktop. Check `logs/` for the
 traceback, but do not paste secrets into a public report.
 
-### `--diagnose` says `voice-templates` warning
+### `--diagnose` says `voice-templates`, `voice-vosk`, or `voice-whisper` warning
 
-Expected until you record templates. It is a warning, not a setup failure.
-The diagnostic is considered healthy when there are zero errors; warnings still
-mean a feature is unavailable.
+In template mode, `voice-templates` is expected until you record templates. In
+Vosk mode, `voice-vosk` is a warning if the optional model is not installed; it
+does not fail setup. In Whisper mode, `voice-whisper` is a warning until the
+optional command model is installed. Install either with
+`scripts\install_voice_model.py` or `scripts\install_whisper_model.py`, or switch
+to template mode. Wake detection always needs the Vosk model. The `wake-word`
+diagnostic reports whether listening is enabled and whether the Vosk model needed
+for detection is present; it is informational when disabled and a warning when
+enabled but unusable. The diagnostic is considered healthy when there are zero
+errors; warnings still mean a feature is unavailable.
 
 ### `--diagnose` says the offline guard is not installed
 
@@ -454,7 +535,9 @@ bundle is available without PyInstaller:
 ```
 
 The bundle excludes `.venv`, runtime data, logs, sandbox files, personal config,
-and voice templates. It includes the from-scratch model and synthetic training
+user voice recordings, and the optional Vosk/Whisper models. Both model
+installers are included; run them after setup if you want local general speech.
+It includes the from-scratch model and synthetic training
 data. Verify `checksums.sha256` before using a bundle from another machine.
 
 ### The packaged app cannot find the model

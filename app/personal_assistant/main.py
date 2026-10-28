@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.metadata
+import importlib.util
 import json
 import logging
 import os
@@ -49,6 +50,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--config", help="Path to a YAML configuration file.")
     parser.add_argument("--cli", action="store_true", help="Run the interactive text console instead of the GUI.")
     parser.add_argument("--voice", action="store_true", help="Run a push-to-talk voice loop in the console.")
+    parser.add_argument("--wake", action="store_true", help="Run the opt-in 'hearty' wake-word console loop.")
     parser.add_argument("--command", help="Run one command and exit.")
     parser.add_argument("--speak", action="store_true", help="Speak the one-shot response when TTS is enabled.")
     parser.add_argument("--diagnose", action="store_true", help="Check the local installation and exit.")
@@ -116,12 +118,23 @@ def _cli(assistant: Assistant, config: Config, verbose: bool = False) -> int:
 
 def _voice_loop(assistant: Assistant, config: Config) -> int:
     print(f"Voice push-to-talk console — offline mode: {config.get('app.offline_mode')}")
-    print("This uses only phrases you recorded with scripts/record_voice_templates.py. Ctrl+C exits.")
+    engine = str(config.get("speech.asr_engine", "template"))
+    if engine == "vosk":
+        print("This uses the local Vosk model. Press Enter, then speak a command. Ctrl+C exits.")
+    elif engine == "whisper":
+        print("This uses the local Whisper model. Press Enter, then speak a command. Ctrl+C exits.")
+    else:
+        print("This uses only phrases you recorded with scripts/record_voice_templates.py. Ctrl+C exits.")
     status = assistant.speech_service().status()
     if not status.get("asr", {}).get("available"):
-        reason = status.get("asr", {}).get("reason") or "No voice templates are installed."
+        reason = status.get("asr", {}).get("reason") or "The speech engine is unavailable."
         print(f"Voice recognition is unavailable: {reason}")
-        print("Type commands with --cli instead, or record templates first.")
+        if engine == "vosk":
+            print("Run scripts/install_voice_model.py once, then try again.")
+        elif engine == "whisper":
+            print("Run scripts/install_whisper_model.py once, then try again.")
+        else:
+            print("Type commands with --cli instead, or record templates first.")
         assistant.shutdown()
         return 2
     while True:
@@ -140,6 +153,64 @@ def _voice_loop(assistant: Assistant, config: Config) -> int:
             print(f"\nTask state: {response.outcome.state} (verified: {response.outcome.verified})")
     assistant.shutdown()
     print("Assistant stopped.")
+    return 0
+
+
+def _wake_loop(assistant: Assistant, config: Config) -> int:
+    import queue
+
+    from .speech.wake import WakeWordListener
+
+    commands: "queue.Queue[tuple[str, float]]" = queue.Queue()
+    statuses: "queue.Queue[tuple[str, str]]" = queue.Queue()
+    listener = WakeWordListener(
+        config,
+        on_status=lambda state, detail: statuses.put((state, detail)),
+        on_command=lambda text, confidence: commands.put((text, confidence)),
+    )
+    ok, message = listener.start()
+    if not ok:
+        print(f"Wake-word listening is unavailable: {message}")
+        print("Install the model with scripts/install_voice_model.py, then try again.")
+        assistant.shutdown()
+        return 2
+    print(f"Wake-word console — offline mode: {config.get('app.offline_mode')}")
+    print(f"Say '{listener.wake_word}' followed by a command, for example: "
+          f"'{listener.wake_word} open notepad'. Ctrl+C exits.")
+    try:
+        while True:
+            try:
+                while True:
+                    state, detail = statuses.get_nowait()
+                    if state == "error":
+                        print(f"\nWake-word error: {detail}")
+                    elif state == "awake":
+                        print("\nWake word heard. Listening for your command…")
+            except queue.Empty:
+                pass
+            if not listener.running:
+                print("\nWake-word listener stopped.")
+                break
+            try:
+                text, confidence = commands.get(timeout=0.25)
+            except queue.Empty:
+                continue
+            print(f"\nHeard: {text} (confidence {confidence:.2f})")
+            command_engine = str(config.get("speech.wake_command_engine", "whisper"))
+            response = assistant.handle_voice_command(
+                text,
+                speak=True,
+                confidence=confidence,
+                engine="whisper-offline" if command_engine == "whisper" else "vosk-offline",
+            )
+            _print_response(response)
+            listener.resume()
+    except KeyboardInterrupt:
+        print()
+    finally:
+        listener.stop()
+        assistant.shutdown()
+        print("Assistant stopped.")
     return 0
 
 
@@ -234,16 +305,60 @@ def diagnose(config: Config) -> dict[str, Any]:
 
         speech = SpeechService(config).status()
         asr = speech.get("asr", {})
-        checks.append(
-            _check(
-                "voice-templates",
-                bool(asr.get("available")),
-                str(asr.get("reason") or f"{asr.get('phrase_count', 0)} phrase(s), {asr.get('take_count', 0)} take(s)"),
-                severity="warning",
+        engine = str(config.get("speech.asr_engine", "template"))
+        check_name = {
+            "vosk": "voice-vosk",
+            "whisper": "voice-whisper",
+        }.get(engine, "voice-templates")
+        if asr.get("available"):
+            detail = (
+                f"{asr.get('engine')} model={asr.get('model_name') or asr.get('templates_dir') or 'local'}"
             )
-        )
+        else:
+            detail = str(asr.get("reason") or "Speech input is unavailable.")
+        checks.append(_check(check_name, bool(asr.get("available")), detail, severity="warning"))
+        wake = speech.get("wake_word", {})
+        wake_word = wake.get("word")
+        wake_enabled = bool(wake.get("enabled"))
+        if wake_enabled:
+            wake_model = config.path("speech.vosk_model_dir")
+            model_present = (wake_model / "am").is_dir() and (wake_model / "conf").is_dir()
+            package_present = importlib.util.find_spec("vosk") is not None
+            wake_ok = model_present and package_present
+            wake_detail = f"'{wake_word}' enabled"
+            if not package_present:
+                wake_detail += " (vosk package missing)"
+            elif not model_present:
+                wake_detail += f" (model missing at {wake_model})"
+        else:
+            wake_ok = True
+            wake_detail = f"'{wake_word}' disabled (opt-in)"
+        checks.append(_check("wake-word", wake_ok, wake_detail, severity="warning"))
+
+        # Wake commands use a separate engine from push-to-talk. Check it even
+        # when the configured push-to-talk engine is Vosk, so a missing Whisper
+        # model is visible instead of silently falling back.
+        command_engine = str(config.get("speech.wake_command_engine", "whisper"))
+        if command_engine == "whisper" and engine != "whisper":
+            from .speech.whisper_asr import WhisperASR
+
+            whisper_status = WhisperASR(
+                config.path("speech.whisper_model_dir"),
+                sample_rate=int(config.get("speech.sample_rate", 16000)),
+                language=str(config.get("speech.whisper_language", "en")),
+                compute_type=str(config.get("speech.whisper_compute_type", "int8")),
+                cpu_threads=int(config.get("speech.whisper_cpu_threads", 4)),
+                beam_size=int(config.get("speech.whisper_beam_size", 5)),
+            ).status()
+            whisper_ok = bool(whisper_status.get("available"))
+            whisper_detail = (
+                f"{whisper_status.get('engine')} model={whisper_status.get('model_name')}"
+                if whisper_ok
+                else str(whisper_status.get("reason") or "Whisper is unavailable.")
+            )
+            checks.append(_check("voice-whisper", whisper_ok, whisper_detail, severity="warning"))
     except Exception as exc:
-        checks.append(_check("voice-templates", False, f"{exc.__class__.__name__}: {exc}", severity="warning"))
+        checks.append(_check("voice", False, f"{exc.__class__.__name__}: {exc}", severity="warning"))
 
     try:
         from .tools import build_registry
@@ -472,7 +587,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Could not create runtime directories: {exc}", file=sys.stderr)
         return 2
 
-    if args.cli or args.command or args.voice:
+    if args.cli or args.command or args.voice or args.wake:
         setup_logging(config, console=True)
     else:
         setup_logging(config, console=False)
@@ -480,6 +595,8 @@ def main(argv: list[str] | None = None) -> int:
     assistant = Assistant(config, approval_callback=_cli_approval)
     if args.command:
         return _run_one_shot(assistant, args.command, args.speak, args.verbose)
+    if args.wake:
+        return _wake_loop(assistant, config)
     if args.voice:
         return _voice_loop(assistant, config)
     if args.cli:
@@ -508,4 +625,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    import multiprocessing
+
+    multiprocessing.freeze_support()
     raise SystemExit(main())

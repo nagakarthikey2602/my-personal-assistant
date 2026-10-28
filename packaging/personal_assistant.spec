@@ -2,17 +2,35 @@
 """PyInstaller specification for the local assistant.
 
 Build from the repository root with scripts/package.ps1. The spec intentionally
-does not collect personal data, memory databases, logs, sandbox contents, or
-user-recorded voice templates. The locally trained intent model is loaded from
-the application data directory at runtime (models/ in source, or the per-user
-data directory for a frozen build) and is not embedded in the executable.
+does not collect personal data, memory databases, logs, sandbox contents,
+user-recorded voice templates, or the optional Vosk/Whisper model directories.
+The locally trained intent model is loaded from the application data directory at
+runtime (models/ in source, or the per-user data directory for a frozen build)
+and is not embedded in the executable. The speech models must be installed once
+with scripts/install_voice_model.py and scripts/install_whisper_model.py; this
+build bundles only the Vosk and CTranslate2 runtimes.
 """
 
 from pathlib import Path
 
+from PyInstaller.utils.hooks import collect_dynamic_libs
+
 ROOT = Path(SPECPATH).resolve().parent
 APP = ROOT / "app"
 PKG = APP / "personal_assistant"
+
+
+def _collect(package: str) -> list[tuple[str, str]]:
+    try:
+        return collect_dynamic_libs(package)
+    except Exception:
+        return []
+
+
+vosk_binaries = _collect("vosk")
+ctranslate2_binaries = _collect("ctranslate2")
+onnxruntime_binaries = _collect("onnxruntime")
+av_binaries = _collect("av")
 
 datas = [
     (str(PKG / "memory" / "schema.sql"), "personal_assistant/memory"),
@@ -40,6 +58,10 @@ hiddenimports = [
     "personal_assistant.speech.template_asr",
     "personal_assistant.speech.tts",
     "personal_assistant.speech.native_audio",
+    "personal_assistant.speech.voice_text",
+    "personal_assistant.speech.vosk_asr",
+    "personal_assistant.speech.whisper_asr",
+    "personal_assistant.speech.wake",
     "personal_assistant.tools",
     "personal_assistant.tools.applications",
     "personal_assistant.tools.browser",
@@ -51,12 +73,20 @@ hiddenimports = [
     "personal_assistant.tools.system",
     "personal_assistant.tools.voice_tools",
     "personal_assistant.tools.windows",
+    "vosk",
+    "cffi",
+    "faster_whisper",
+    "ctranslate2",
+    "huggingface_hub",
+    "tokenizers",
+    "onnxruntime",
+    "av",
 ]
 
 a = Analysis(
     [str(ROOT / "packaging" / "launcher.py")],
     pathex=[str(APP)],
-    binaries=[],
+    binaries=vosk_binaries + ctranslate2_binaries + onnxruntime_binaries + av_binaries,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],

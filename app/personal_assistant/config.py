@@ -143,7 +143,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "min_margin": 0.15,
     },
     "speech": {
-        "asr_engine": "template",  # template | none
+        "asr_engine": "template",  # template | vosk | whisper | none
         "tts_engine": "formant",  # formant | sapi | none
         "allow_os_pretrained_tts": False,
         "input_device": None,
@@ -155,8 +155,23 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "template_threshold": 0.72,
         "template_margin": 0.08,
         "templates_dir": f"{APP_ROOT_MARKER}\\models\\speech_templates",
+        "vosk_model_dir": f"{APP_ROOT_MARKER}\\models\\vosk\\vosk-model-small-en-us-0.15",
+        "vosk_language": "en-us",
+        "whisper_model_dir": f"{APP_ROOT_MARKER}\\models\\whisper\\faster-whisper-tiny.en",
+        "whisper_language": "en",
+        "whisper_compute_type": "int8",
+        "whisper_cpu_threads": 4,
+        "whisper_beam_size": 5,
+        "whisper_initial_prompt": "",
         "wake_word_enabled": False,
-        "wake_word": "assistant",
+        "wake_word": "hearty",
+        "wake_word_aliases": ["hearty", "hardy", "harty", "heart y"],
+        "wake_command_engine": "whisper",
+        "wake_command_seconds": 6.0,
+        "wake_command_phrases": [],
+        "wake_command_timeout": 10.0,
+        "wake_command_settle_seconds": 0.65,
+        "wake_ack_sound": True,
         "max_speech_seconds": 15,
     },
     "diagnostics": {
@@ -275,6 +290,14 @@ class Config:
         self.data["permissions"]["audit_log"] = str(_normalise_root(self.data["permissions"]["audit_log"], self.root))
         self.data["intelligence"]["intent_model_path"] = str(_normalise_root(self.data["intelligence"]["intent_model_path"], self.root))
         self.data["speech"]["templates_dir"] = str(_normalise_root(self.data["speech"]["templates_dir"], self.root))
+        if "vosk_model_dir" in self.data["speech"]:
+            self.data["speech"]["vosk_model_dir"] = str(
+                _normalise_root(self.data["speech"]["vosk_model_dir"], self.root)
+            )
+        if "whisper_model_dir" in self.data["speech"]:
+            self.data["speech"]["whisper_model_dir"] = str(
+                _normalise_root(self.data["speech"]["whisper_model_dir"], self.root)
+            )
         self.data["diagnostics"]["test_directory"] = str(_normalise_root(self.data["diagnostics"]["test_directory"], self.root))
 
     def validate(self) -> None:
@@ -286,8 +309,29 @@ class Config:
                 raise ConfigError(f"app.{name} must be an integer between 1 and 4.")
         if self.get("app.max_steps") < 1 or self.get("app.max_steps") > 200:
             raise ConfigError("app.max_steps must be between 1 and 200.")
-        if self.get("speech.asr_engine") not in {"template", "none"}:
-            raise ConfigError("speech.asr_engine must be 'template' or 'none'.")
+        if self.get("speech.asr_engine") not in {"template", "vosk", "whisper", "none"}:
+            raise ConfigError("speech.asr_engine must be 'template', 'vosk', 'whisper' or 'none'.")
+        if not isinstance(self.get("speech.vosk_model_dir"), str) or not self.get("speech.vosk_model_dir"):
+            raise ConfigError("speech.vosk_model_dir must be a directory path.")
+        if not isinstance(self.get("speech.whisper_model_dir"), str) or not self.get("speech.whisper_model_dir"):
+            raise ConfigError("speech.whisper_model_dir must be a directory path.")
+        aliases = self.get("speech.wake_word_aliases")
+        if not isinstance(aliases, list) or not all(isinstance(item, str) for item in aliases):
+            raise ConfigError("speech.wake_word_aliases must be a list of strings.")
+        if self.get("speech.wake_command_engine") not in {"whisper", "vosk"}:
+            raise ConfigError("speech.wake_command_engine must be 'whisper' or 'vosk'.")
+        if not 1.0 <= float(self.get("speech.wake_command_seconds", 6.0)) <= 15.0:
+            raise ConfigError("speech.wake_command_seconds must be between 1 and 15 seconds.")
+        if not 2.0 <= float(self.get("speech.wake_command_timeout", 10.0)) <= 30.0:
+            raise ConfigError("speech.wake_command_timeout must be between 2 and 30 seconds.")
+        if not 0.2 <= float(self.get("speech.wake_command_settle_seconds", 0.65)) <= 3.0:
+            raise ConfigError("speech.wake_command_settle_seconds must be between 0.2 and 3 seconds.")
+        if self.get("speech.whisper_compute_type") not in {"int8", "int8_float32", "float32"}:
+            raise ConfigError("speech.whisper_compute_type must be 'int8', 'int8_float32' or 'float32'.")
+        if not 1 <= int(self.get("speech.whisper_cpu_threads", 4)) <= 64:
+            raise ConfigError("speech.whisper_cpu_threads must be between 1 and 64.")
+        if not 1 <= int(self.get("speech.whisper_beam_size", 5)) <= 10:
+            raise ConfigError("speech.whisper_beam_size must be between 1 and 10.")
         if self.get("speech.tts_engine") not in {"formant", "sapi", "none"}:
             raise ConfigError("speech.tts_engine must be 'formant', 'sapi' or 'none'.")
         if self.get("speech.tts_engine") == "sapi" and not self.get("speech.allow_os_pretrained_tts"):

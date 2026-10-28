@@ -6,7 +6,8 @@
     The bundle contains the application, tests, documentation, scripts, the
     locally trained intent model, and the synthetic training/evaluation data.
     It deliberately excludes .venv, memory databases, logs, sandbox files,
-    user-recorded voice templates, and configuration overrides.
+    user-recorded voice templates, the optional Vosk and Whisper speech models,
+    and configuration overrides.
 
 .PARAMETER Version
     Optional version override. Defaults to __version__ in the package.
@@ -100,6 +101,16 @@ This bundle contains no personal memory, logs, voice recordings, or configuratio
 overrides. The intent model and synthetic training data are included for
 reproducibility. User-recorded speech templates are intentionally excluded.
 
+The optional Vosk (about 40 MB) and Whisper (about 75 MB) speech models are
+also excluded. To use local general speech recognition or the 'hearty' wake
+word, install them once after setup:
+  .venv\Scripts\python.exe .\scripts\install_voice_model.py
+  .venv\Scripts\python.exe .\scripts\install_whisper_model.py
+Then choose speech.asr_engine: vosk or whisper in config\config.yaml. Wake
+detection always uses Vosk; wake_command_engine: whisper gives more accurate
+hands-free commands. The running assistant never downloads a model and never
+sends audio off this PC.
+
 Quick start (PowerShell):
   1. Install CPython 3.11-3.14 (this build was exercised on 3.14.6).
   2. Run: powershell -ExecutionPolicy Bypass -File .\scripts\setup.ps1
@@ -138,4 +149,4 @@ if (-not $KeepStage) {
 Write-Host "Bundle created:"
 Write-Host "  $Zip"
 Write-Host "  Size: $([math]::Round((Get-Item -LiteralPath $Zip).Length / 1MB, 2)) MB"
-Write-Host "The bundle excludes personal data and user-recorded voice templates."
+Write-Host "The bundle excludes personal data, user-recorded voice templates, and the optional Vosk model."

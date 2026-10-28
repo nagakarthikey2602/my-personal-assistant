@@ -67,8 +67,8 @@ class AssistantResponse:
 
 class Assistant:
     LIMITATIONS = [
-        "Speech recognition is a closed-vocabulary, user-recorded template matcher, not general dictation.",
-        "There is no always-listening wake word and no background microphone capture.",
+        "Speech recognition can use user-recorded templates, an optional local Vosk model, or an optional local Whisper model; none sends audio off this PC.",
+        "Wake-word listening is opt-in and keeps the microphone open while it is enabled.",
         "Formant speech output is robotic and has not been perceptually validated.",
         "Browser support opens local pages or explicit URLs; it does not fill forms or automate arbitrary pages.",
         "UI automation can launch/focus/close apps and type text, but it has no accessibility-tree verification.",
@@ -77,7 +77,7 @@ class Assistant:
         "Undo covers supported filesystem operations only, not app/browser/typing actions.",
         "The intent model is a small locally trained closed-label classifier; it never executes actions.",
         "The application network guard covers Python sockets only, not child processes or native libraries.",
-        "No cloud AI, telemetry, or pretrained assistant model is used.",
+        "No cloud AI, telemetry, or remote control server is used. The optional Vosk and Whisper ASR models run locally.",
     ]
 
     def __init__(
@@ -190,14 +190,36 @@ class Assistant:
                 text=result.get("reason") or "I did not catch a command. Please repeat or type it.",
                 kind="clarify",
             )
+        return self.handle_voice_command(
+            text,
+            speak=speak,
+            confidence=float(result.get("confidence") or 0.0),
+            engine=str(result.get("engine") or ""),
+        )
+
+    def handle_voice_command(
+        self,
+        text: str,
+        *,
+        speak: bool = False,
+        confidence: float = 0.0,
+        engine: str = "vosk-offline",
+    ) -> AssistantResponse:
+        """Execute an already-transcribed voice command through the normal path."""
+        raw = str(text or "").strip()
+        if not raw:
+            return AssistantResponse(
+                text="I did not catch a command. Please repeat or type it.",
+                kind="clarify",
+            )
         self.audit.log(
             "voice_transcribed",
-            characters=len(text),
-            confidence=result.get("confidence"),
-            engine=result.get("engine"),
+            characters=len(raw),
+            confidence=round(float(confidence), 4),
+            engine=engine,
         )
-        response = self.handle_command(text, speak=False)
-        response.details.insert(0, f"Voice transcript: {text}")
+        response = self.handle_command(raw, speak=False)
+        response.details.insert(0, f"Voice transcript: {raw}")
         if speak:
             self._speak_if_configured(response.spoken_text or response.text)
         return response
@@ -386,10 +408,11 @@ class Assistant:
             return AssistantResponse(
                 text=(
                     "Use the Push to talk button in the window to record a short command, or run the app with "
-                    "--voice for a console push-to-talk loop. There is no always-listening wake word."
+                    "--voice for a console push-to-talk loop. Enable the wake-word listener to say 'hearty' "
+                    "followed by a command. The listener is opt-in and shows its status in the window."
                 ),
                 kind="builtin", parse=parsed,
-                spoken_text="Use the push to talk button to record a command.",
+                spoken_text="Use push to talk, or enable the hearty wake word in the window.",
             )
         return AssistantResponse(
             text=f"The built-in command '{name}' is not implemented. Nothing was run.",
@@ -673,6 +696,7 @@ class Assistant:
                 "tts": speech.get("tts", {}),
                 "audio_input_available": speech.get("audio", {}).get("input_available"),
                 "audio_output_available": speech.get("audio", {}).get("output_available"),
+                "wake_word": speech.get("wake_word", {}),
                 "limitations": speech.get("limitations", []),
             },
             "tools": len(self.registry.names()),
@@ -696,6 +720,8 @@ class Assistant:
             + (" — label suggestion only" if model.get("available") else f" ({model.get('reason', '')})"),
             f"Speech input available: {speech.get('audio_input_available')}; speech output available: "
             f"{speech.get('tts', {}).get('available')} ({speech.get('tts', {}).get('configured_engine')})",
+            f"Wake word: {speech.get('wake_word', {}).get('word', 'hearty')} "
+            f"({'enabled' if speech.get('wake_word', {}).get('enabled') else 'disabled'})",
             f"Undo records: {recovery.get('entries', 0)} ({recovery.get('pending', 0)} pending)",
             f"Configuration: {data.get('configuration')}",
         ]

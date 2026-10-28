@@ -45,9 +45,29 @@ def test_invalid_values_are_rejected(workspace: Path) -> None:
     with pytest.raises(ConfigError):
         Config.from_dict({"app": {"offline_mode": "cloud"}}, workspace)
     with pytest.raises(ConfigError):
-        Config.from_dict({"speech": {"asr_engine": "whisper"}}, workspace)
+        Config.from_dict({"speech": {"asr_engine": "bogus"}}, workspace)
+    with pytest.raises(ConfigError):
+        Config.from_dict({"speech": {"wake_command_engine": "bogus"}}, workspace)
     with pytest.raises(ConfigError):
         Config.from_dict({"files": {"max_read_bytes": 10}}, workspace)
+
+
+def test_wake_word_can_run_alongside_whisper_commands(workspace: Path) -> None:
+    cfg = Config.from_dict(
+        {"speech": {"asr_engine": "whisper", "wake_word_enabled": True}},
+        workspace,
+    )
+    assert cfg.get("speech.wake_word") == "hearty"
+    assert cfg.get("speech.asr_engine") == "whisper"
+    assert cfg.get("speech.wake_command_engine") == "whisper"
+
+
+def test_wake_aliases_must_be_a_list_of_strings(workspace: Path) -> None:
+    with pytest.raises(ConfigError, match="aliases"):
+        Config.from_dict(
+            {"speech": {"asr_engine": "vosk", "wake_word_aliases": ["ok", 3]}},
+            workspace,
+        )
 
 
 def test_save_and_reload_round_trip(workspace: Path) -> None:

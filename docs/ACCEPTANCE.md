@@ -10,7 +10,9 @@
 
 This is the record of what was actually run. It is not a claim that untested
 manual interactions, a packaged executable, or general speech recognition were
-validated.
+validated. A later voice-integration run is recorded in the
+[addendum](#voice-integration-addendum--2026-10-28); the table below is the
+original 2026-10-27 acceptance run.
 
 ## Result summary
 
@@ -30,6 +32,51 @@ validated.
 | Perceptual TTS test | **NOT RUN** | Requires a human listener |
 | Real app launch/close | **NOT RUN** | Requires explicit consent; no application was started |
 | Clipboard/screenshot changes | **NOT RUN** | Requires explicit consent; automated tests avoid side effects |
+
+## Voice integration addendum — 2026-10-28
+
+This addendum records the optional local Vosk and faster-whisper speech
+integration and the opt-in “hearty” wake-word listener. The work described here
+is part of the `main` branch history.
+
+| Area | Result | Evidence |
+|---|---|---|
+| Vosk runtime | **PASS** | `vosk 0.3.45` installed on CPython 3.14.6; `cffi 2.1.1` |
+| Vosk model installer | **PASS** | Network download of `vosk-model-small-en-us-0.15` succeeded; archive SHA-256 `30f26242…42498`; safe extraction and `--check` succeeded |
+| Whisper runtime | **PASS** | `faster-whisper 1.2.1`, `ctranslate2 4.8.4`, local `faster-whisper-tiny.en` (78,090,594 bytes, 4 files) |
+| Whisper model loader | **PASS** | Loaded from `models/whisper` with `local_files_only=True`; worker preload 0.95–1.36 s; repeated decode 0.50–0.67 s |
+| Push-to-talk Whisper path | **PASS** | `SpeechService.record_and_transcribe` with captured PCM returned `create a file test.txt` (confidence 0.82) in 1.73 s including worker startup |
+| Vosk + Whisper coexistence | **PASS** | Persistent Whisper worker with `CT2_USE_MKL=0` survived Vosk model load and decoded `create a file test.txt` |
+| Clean-audio recognition | **PASS** | SAPI-generated WAV transcribed as `hardy open notepad`; wake alias matched |
+| Wake-state dispatch | **PASS (synthetic stream)** | Fake PCM stream produced `listening → awake → muted` and command `open notepad` at confidence `1.0` |
+| End-to-end wake + Whisper | **PASS (synthetic WAV)** | `tts_hybrid.wav` produced `listening → loading → awake → muted` and dispatched `create a file test.txt` (confidence 0.77) |
+| Wake grammar on live capture | **PASS** | Constrained Vosk found all four spoken “hearty” test phrases in `wake_live_probe2.wav`; open-vocabulary Vosk was too slow on this CPU |
+| Wake GUI auto-start | **PASS** | With the installed config, the withdrawn Tk window reported `wake: listening`, a running listener, and the local model available |
+| Real microphone startup | **PASS** | A real WinMM stream opened with the installed config; status moved `loading → listening` with no microphone, Vosk, or Whisper-worker errors, then stopped cleanly |
+| Automated tests | **PASS** | `136 passed, 1 skipped`; voice-text, Vosk (including shared-model loading), Whisper worker, wake-listener (fake-stream dispatch, mid-session worker failure, stop-before-deadline, VAD capture), config, UI-badge, and voice-command routing checks |
+| Self-test | **PASS** | `15/15` |
+| Diagnostics | **PASS, no warnings** | Vosk available; wake word enabled; 53 tools; offline guard installed |
+| Real microphone acoustic validation | **NOT VALIDATED** | Two captures (RMS ~0.16-0.17) were dominated by unrelated ambient audio; the model returned unrelated text |
+
+The automated suite still never opens a microphone, plays audio, or downloads a
+model. The wake dispatch check used an in-memory fake stream; the end-to-end check
+used the synthetic `tts_hybrid.wav`; model and installer checks used local files.
+The real-microphone limitation is a test environment issue, not a reported
+success: a quiet room or headset is required to validate acoustic wake-word
+triggering.
+
+Whisper runs in a persistent local child process because loading Vosk and
+CTranslate2 in one process intermittently failed with
+`mkl_malloc: failed to allocate memory` on this machine. The worker sets
+`CT2_USE_MKL=0`, `OPENBLAS_NUM_THREADS=1`, and `OMP_NUM_THREADS=1`; no audio is
+written to disk and only raw PCM crosses the local pipe. If the worker cannot
+start, the listener records the reason and falls back to the local Vosk
+recognizer.
+
+While re-running the suite, the typing-risk check was also hardened for a NULL
+foreground-window handle (a locked or non-interactive desktop). It now keeps
+typing at sensitive risk instead of raising a `TypeError`; this is not a voice
+feature, but it was needed for a clean suite run in this session.
 
 ## Automated test suite
 
@@ -299,8 +346,10 @@ These items were deliberately not performed, and no result is claimed for them:
 6. **Symlink traversal.** The test was skipped because this Windows session could
    not create symlinks. Defensive link resolution remains in the path policy.
 7. **PyInstaller executable.** Not built; see above.
-8. **Downloaded wake-word or general ASR/TTS models.** Not applicable by design;
-   none are installed or supported.
+8. **Downloaded wake-word or general ASR/TTS models.** Superseded for the
+   explicitly installed local Vosk and Whisper models by the 2026-10-28 addendum
+   above. Real acoustic validation remains unvalidated; no cloud speech model is
+   installed.
 9. **OS-level network isolation.** Not configured; the Python guard boundary is
    documented explicitly.
 

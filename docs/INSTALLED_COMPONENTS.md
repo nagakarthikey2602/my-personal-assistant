@@ -5,7 +5,7 @@ This document records what was actually installed and exercised for source build
 the same files. Hashes are local integrity aids; they are **not** signatures or
 remote attestation.
 
-Recorded on **2026-10-27** on Windows 11 Home `10.0.26300` (64-bit), CPython
+Recorded on **2026-10-28** on Windows 11 Home `10.0.26300` (64-bit), CPython
 **3.14.6** (`MSC v.1944`, 64-bit), in the project virtual environment at
 `.venv`.
 
@@ -21,6 +21,8 @@ Recorded on **2026-10-27** on Windows 11 Home `10.0.26300` (64-bit), CPython
 | Training split (518) | `training_data/generated/train.jsonl` | 56,013 | `bf30ef79bb859a08a304dadd29e15d944f6dbf0310fbfeb3c89b98504431fa02` |
 | Validation split (118) | `training_data/generated/validation.jsonl` | 13,307 | `1f4d21707a59f03c5bd623ed40750d1aa67daa5901d7ba625c0e55fb53924b8e` |
 | Test split (129) | `training_data/generated/test.jsonl` | 13,969 | `8f54a146390d469b1b5facef71fc3de2ed5962725d2e9f2789640f5d326f0b96` |
+| Vosk small English model (installed tree) | `models/vosk/vosk-model-small-en-us-0.15` | 70,898,967 (14 files) | Archive: `30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498` |
+| Whisper `tiny.en` model (installed tree) | `models/whisper/faster-whisper-tiny.en` | 78,090,594 (4 files) | `model.bin`: `1a5afae06a4db91c975c9a9d78be5cc110ee4ea022ad57d55492e4550e936b2a` |
 
 The package version is `0.1.0` (`app/personal_assistant/__init__.py`). The model
 was trained at `2026-10-27T11:32:41Z` from 518 authored-template examples with 52
@@ -51,6 +53,26 @@ prove where a wheel came from.
 | PyYAML | 6.0.3 | MIT | Local configuration parsing (`safe_load`) | `1d4eed6ae5daeb36dfa6054cca5fd095c1a534a9b2f894e64d713aa19c78770e` |
 | pypdf | 6.21.2 | BSD-3-Clause | Read-only PDF text extraction | `91076ee26673ce395dddf8b115be68d9ccf7b9b7505cec90d25df4022690a249` |
 | Pillow | 13.0.0 | MIT-CMU | Screenshot capture and PNG validation | `1ea986d185ec0810a4821d06170cd310a217f9fc13e0145862d56acd3b64415e` |
+| Vosk | 0.3.45 | Apache-2.0 (upstream; package metadata says `UNKNOWN`) | Optional local wake detection and fallback ASR | `c3658f9542068391e6780727f732a1885d27b33ac07678fe74de6ca362939fdd` |
+| faster-whisper | 1.2.1 | MIT | Optional local command ASR wrapper | `7e93610c4ffffcab687212e2e770c5a567dcff3e486f55c09ebed4fba7b694bc` |
+| CTranslate2 | 4.8.4 | MIT | Local CPU inference for Whisper | `34ccb96c835bc0f034243f63a141d202f7ee26b48cdd5ee3cf71f5747a86ed7e` |
+| ONNX Runtime | 1.31.1 | MIT | faster-whisper VAD/model helper dependency | `56f9991a41a97b786d5fbc2f9de3b53e42ce9ad6d9522f888e10f5855ac7b30e` |
+| av | 19.0.2 | BSD-3-Clause | Audio decoding dependency of faster-whisper | `86c15b6b2646a279a568e3dbadc00d8ba95ab1e65bb75e8acd0de705cfd906ff` |
+| tokenizers | 0.23.3 | Apache-2.0 (upstream; package metadata says `UNKNOWN`) | Whisper tokenizer | `ee71fa3d6cc9cc2332f45bbfc72cb729d1a6a1c619d4bdef9c0cd80c8cf328a3` |
+| huggingface_hub | 2.3.0 | Apache-2.0 | Local model lookup; forced offline at runtime | `c65cc80513359e5a6adb1ed42d1dbda396c83b791eeb44bded1db1b9ad00493c` |
+
+Vosk's transitive set on this interpreter is `cffi 2.1.1`, `pycparser 3.12`,
+`requests 2.34.2`, `certifi 2026.10.23`, `charset-normalizer 3.5.2`, `idna 3.20`,
+`urllib3 2.8.0`, `srt 3.5.3`, `tqdm 4.70.1`, and `websockets 17.3`. The
+application imports only the local recognizer; it does not run a server or make
+cloud calls. The model is not a Python package and is recorded above.
+
+faster-whisper's remaining transitive set on this interpreter is `anyio 4.15.1`,
+`click 8.5.0`, `filelock 4.2.4`, `flatbuffers 25.12.19`, `fsspec 2026.9.0`,
+`h11 0.16.0`, `hf-xet 1.7.0`, `httpcore2 2.16.0`, `httpx2 2.16.0`,
+`protobuf 7.36.2`, `truststore 0.10.5`, and `typing_extensions 4.16.0`. The
+running assistant sets `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` in the
+Whisper worker and loads the model from disk with `local_files_only=True`.
 
 Declared ranges are in `requirements.txt`; the exact recorded resolution is in
 `requirements.lock.txt`. The lock file is a version lock, not a hash-locked
@@ -90,17 +112,22 @@ environment-driven tradeoff; see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Deliberately absent
 
-No cloud SDK, LLM runtime, pretrained embedding/acoustic/vision model, telemetry
-client, remote server framework, browser automation binary, or automatic updater
-is installed or required. The following are specifically absent from the
-recorded environment:
+No cloud SDK, LLM runtime, pretrained embedding/vision model, telemetry client,
+remote server framework, browser automation binary, or automatic updater is
+installed or required. The following are specifically absent from the recorded
+environment:
 
 - PyInstaller;
 - PySide6/PyQt and other downloaded GUI runtimes;
 - sounddevice/PortAudio;
-- requests/httpx/Flask/FastAPI/websockets;
+- Flask/FastAPI and other server frameworks;
 - Playwright/Selenium or downloaded browser binaries;
-- Whisper or any pretrained speech-recognition model.
+- any speech-recognition model besides the documented, explicitly installed local
+  Vosk and Whisper models;
+- any runtime model downloader or cloud fallback.
+
+`requests`, `websockets`, `srt`, and `tqdm` are present only because Vosk declares
+them; the application does not use them to contact a network service.
 
 Windows SAPI voices are OS components and are disabled by default. They are
 available only after both `speech.tts_engine: sapi` and
@@ -114,6 +141,9 @@ fallback from the from-scratch formant synthesizer to SAPI.
 | Application source | This repository | No |
 | Intent model | Trained locally from `scripts/generate_training_data.py` templates | No |
 | Speech templates | None installed; owner must record them locally | No |
+| Vosk ASR (optional) | Vosk 0.3.45 (Apache-2.0) plus `vosk-model-small-en-us-0.15`, downloaded once by `scripts/install_voice_model.py` | No; model is loaded from `models/vosk` |
+| Whisper command ASR (optional) | faster-whisper 1.2.1 (MIT) plus OpenAI `tiny.en` weights, downloaded once by `scripts/install_whisper_model.py` | No; model is loaded from `models/whisper` in a local worker |
+| Wake-word listener | `speech/wake.py`; constrained local Vosk detection plus the local command engine; opt-in and visible while active | No |
 | Formant TTS | Rule tables and DSP implemented in this repository | No |
 | Python packages | Installed by `setup.ps1` from pip (or a local wheelhouse) | No |
 | SAPI voice (optional) | Microsoft component already installed in Windows | Not required by the helper; OS behavior is outside the Python guard |

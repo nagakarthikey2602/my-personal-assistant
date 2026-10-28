@@ -19,13 +19,15 @@ Delivered:
   setup/launch/bundle/package scripts;
 - a from-scratch intent model with a recorded model card and honest synthetic
   evaluation;
-- a closed-vocabulary, user-recorded speech recognizer and a deterministic
-  formant synthesizer.
+- a closed-vocabulary, user-recorded speech recognizer, optional local Vosk and
+  Whisper general-English recognizers, an opt-in “hearty” wake-word listener, and
+  a deterministic formant synthesizer.
 
 Known gaps are listed in [CAPABILITIES.md](CAPABILITIES.md), not hidden as
 future promises. The most important are packaging verification, real microphone
-and perceptual TTS validation, full UI Automation, general mouse control, OS
-setting changes, and the Android bridge (not started).
+validation for Vosk/Whisper and the wake word, perceptual TTS validation, full UI
+Automation, general mouse control, OS setting changes, and the Android bridge
+(not started).
 
 ## Phase 1: hardening and reproducible delivery
 
@@ -63,18 +65,25 @@ acceptance run; no unsupported claim in README; security boundaries reviewed.
    owner consent), including quiet/noisy conditions and several speakers only if
    the owner intends multi-speaker use.
 2. Measure template ASR false-accept/false-reject rates per phrase, not just a
-   single accuracy number. Report the closed vocabulary and the threshold.
+   single accuracy number. Report the closed vocabulary and the threshold. Do
+   the same for the installed Vosk and Whisper models and for wake-word false
+   accepts in quiet, noisy, and speaker-varied conditions; keep the alias list
+   conservative.
 3. Perceptually evaluate the formant TTS for intelligibility and add a documented
    listening protocol. Improve the synthesizer only if it remains deterministic
    and local.
-4. Improve the recording workflow: device selection, take management, phrase
-   metadata, and a clear delete/export path for voice features.
+4. Improve the recording and model-install workflow: device selection, take
+   management, phrase metadata, model integrity reporting, and a clear
+   delete/export path for voice features.
 5. Keep SAPI as an explicit opt-in exception, or remove it if the project decides
-   the pretrained-model exception is not acceptable.
+   the pretrained-model exception is not acceptable. Keep the Vosk and Whisper
+   models explicitly installed and opt-in as documented in
+   [MODEL_POLICY.md](MODEL_POLICY.md).
 
-Do **not** silently add Whisper, a cloud STT service, or a downloaded TTS model.
-A future local neural model would require a model card, a size/latency budget, a
-provenance review, and an offline installation path.
+Do **not** silently add a cloud STT service, a downloaded TTS model, or any
+speech model not documented in the model policy. A future local neural model
+would require a model card, a size/latency budget, a provenance review, and an
+offline installation path.
 
 ## Phase 3: verified desktop automation
 
@@ -158,7 +167,9 @@ there is no remote API.
 
 - cloud AI, telemetry, remote logging, or silent online fallback;
 - an unauthenticated remote control server;
-- an always-listening microphone or general dictation in the current milestone;
+- a hidden always-listening microphone; the only continuous mode is opt-in,
+  visibly reported, and stoppable;
+- cloud speech or dictation-accuracy guarantees from the small local model;
 - arbitrary shell access or a general computer-use agent;
 - permanent delete, ransomware rollback, or a claim of secure erase;
 - OS-level sandboxing or protection from a compromised Windows account;

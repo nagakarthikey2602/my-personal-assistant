@@ -6,8 +6,14 @@ psutil>=7,<8
 PyYAML>=6,<7
 pypdf>=6,<8
 Pillow>=11,<14
+# Optional local general speech recognition and the opt-in wake-word listener.
+# Models are not shipped; install them once with scripts/install_voice_model.py
+# (wake detection, Vosk) and scripts/install_whisper_model.py (general commands,
+# faster-whisper). Recognition runs in local processes only, with no cloud path.
+vosk>=0.3.45,<0.4
+faster-whisper>=1.2,<1.3
 
 # The desktop UI uses Tkinter and audio capture uses WinMM both from the Python
 # standard library. This is deliberate: on the inspected Python 3.14 installation,
-# PySide6 and sounddevice/cffi had no compatible wheels. See docs/ARCHITECTURE.md.
+# PySide6 and sounddevice had no compatible wheels. See docs/ARCHITECTURE.md.
 

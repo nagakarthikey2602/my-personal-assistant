@@ -494,7 +494,10 @@ def _type_risk(args: dict[str, Any]) -> int:
     if "notepad" in title or "wordpad" in title:
         return RiskLevel.REVERSIBLE
     windows = enumerate_windows()
-    foreground = int(user32.GetForegroundWindow())
+    # GetForegroundWindow returns NULL when the desktop has no active window,
+    # for example while the session is locked. With no verified safe target,
+    # typing remains sensitive rather than failing or guessing.
+    foreground = int(user32.GetForegroundWindow() or 0)
     for window in windows:
         if window["hwnd"] == foreground and (window["process"] or "").lower() in _SAFE_TYPE_PROCESSES:
             return RiskLevel.REVERSIBLE

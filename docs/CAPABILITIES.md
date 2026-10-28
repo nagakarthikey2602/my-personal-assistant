@@ -137,15 +137,20 @@ management, or page-content-to-tool path.
 
 | Tool | Risk | What it does | Evidence / limit |
 |---|---:|---|---|
-| `voice.status` | 1 | ASR/template availability, TTS backend, devices | Read-only |
-| `voice.capabilities` | 1 | Describe the closed-vocabulary limits | Read-only |
+| `voice.status` | 1 | Local ASR engine/model, TTS backend, devices, wake-word state | Read-only |
+| `voice.capabilities` | 1 | Describe local speech limits and model provenance | Read-only |
 | `voice.list_devices` | 1 | Microphone/speaker list | Read-only |
 | `voice.speak` | 2 | Speak through the configured local backend | **Unverified**; no audio read-back; formant voice is robotic |
 
 Voice capture is not a standalone tool; it is an explicit push-to-talk action in
-the GUI/console. There is no always-listening wake word, speaker diarization,
-emotion detection, or general dictation. The template recognizer matches only
-phrases the owner recorded. See [MODEL_POLICY.md](MODEL_POLICY.md).
+the GUI/console, or the opt-in wake-word listener. The listener keeps the
+microphone open only while it is enabled, shows its state in the window, and can
+be stopped with `Wake: off`. General English recognition uses the optional local
+Vosk model for wake detection and fallback commands, and the optional local
+Whisper model for more accurate wake commands. The original template recognizer
+matches only phrases the owner recorded. There is no speaker diarization, emotion
+detection, cloud speech, or hidden fallback. See
+[MODEL_POLICY.md](MODEL_POLICY.md).
 
 ## Example task coverage
 
@@ -163,7 +168,7 @@ These are the main verified local workflows:
 - run the six reviewed developer commands and scan a local failure log;
 - open local browser pages; external URLs only with explicit opt-in outside
   strict mode;
-- speak locally and use the closed-vocabulary voice loop.
+- speak locally and use push-to-talk or the opt-in “hearty” wake-word listener.
 
 ## Explicit non-capabilities
 
@@ -181,8 +186,13 @@ The following are **not implemented** and must not be claimed as working:
 - OCR, image understanding, PDF writing, spreadsheet writing, or arbitrary
   binary editing;
 - cloud AI, telemetry, remote logging, remote control, or an Android server;
-- general dictation, always-listening wake words, or pretrained speech models
-  (SAPI is an explicit, disabled-by-default exception);
+- cloud speech recognition or synthesis, speaker diarization, or emotion
+  detection;
+- custom acoustic-model training for a new wake word; the listener matches the
+  configured Vosk transcription plus aliases, it does not train a detector;
+- silent pretrained speech models. The local Vosk and Whisper models are
+  explicit, documented exceptions; SAPI voices are an explicit,
+  disabled-by-default exception;
 - multi-user accounts, encrypted memory, signed/tamper-proof audit logs, or an
   OS-level sandbox;
 - a verified PyInstaller executable on every Python version. The packaging path

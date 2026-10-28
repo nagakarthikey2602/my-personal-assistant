@@ -36,10 +36,11 @@ Source: <https://github.com/nagakarthikey2602/my-personal-assistant>
   No form filling or page automation. Page text is untrusted data.
 - **Memory:** explicit preferences, task history, training examples, export,
   retention, disable switch, and delete operations in local SQLite.
-- **Voice:** WinMM devices, push-to-talk capture with energy VAD, a closed-
-  vocabulary MFCC/DTW recognizer trained from the owner's recordings, and a
-  from-scratch formant synthesizer. Optional SAPI voices are policy-gated and
-  off by default.
+- **Voice:** WinMM devices, push-to-talk capture with energy VAD, optional local
+  Vosk and Whisper models for general English commands, an opt-in continuous
+  wake-word listener (default “hearty”), and a from-scratch formant synthesizer.
+  The original user-recorded MFCC/DTW recognizer remains available. Optional SAPI
+  voices are policy-gated and off by default.
 - **Safety:** four risk levels, approval prompts, strict path allowlists,
   protected internal data, sensitive-name blocking, kill switch, cancellation,
   timeouts, quarantine instead of permanent delete, recovery journal, bounded
@@ -56,8 +57,11 @@ Source: <https://github.com/nagakarthikey2602/my-personal-assistant>
 - The desktop UI uses Tkinter from the standard library because PySide6 had no
   compatible wheel for the inspected Python 3.14 installation. Audio capture and
   playback use WinMM through `ctypes`, not `sounddevice`.
-- No pretrained assistant model, cloud API, API key, or telemetry endpoint is
-  needed or supported.
+- No cloud API, API key, or telemetry endpoint is needed or supported. General
+  speech recognition is optional and local: Vosk/Kaldi handles wake detection and
+  fallback recognition, and faster-whisper handles general wake commands. Both
+  models are downloaded once by the owner (about 40 MB and 75 MB), never at
+  runtime.
 
 ## Quick start
 
@@ -176,22 +180,48 @@ by default; command history may still contain personal text.
 
 ## Voice input and output
 
-Voice input is **closed vocabulary**, not general dictation. Record phrases with:
+Voice input has two local modes. The **template** mode is a closed-vocabulary
+recognizer using MFCC features and DTW against phrases you record:
 
 ```powershell
 .\.venv\Scripts\python.exe .\scripts\record_voice_templates.py
 ```
 
-Then use `Push to talk` in the window or `--voice` in the console. Recognition
-uses MFCC features and DTW against your recordings. No microphone is opened
-without an explicit push-to-talk action. There is no wake word or always-listening
-mode.
+The **Vosk** mode recognizes general English commands with a pretrained Kaldi
+model that runs entirely on this PC. Install the model once; the application
+never downloads it at runtime:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\install_voice_model.py
+```
+
+For wake commands, install the optional local Whisper model once as well:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\install_whisper_model.py
+```
+
+Set `speech.asr_engine` to `vosk` or `whisper` in `config/config.yaml`. The
+installed configuration uses `vosk` for general/push-to-talk recognition and
+`wake_command_engine: whisper` for more accurate hands-free commands; wake
+detection itself is grammar-constrained Vosk. Use `Push to talk` in the window or
+`--voice` in the console. For hands-free operation, click `🎧 Wake` or run
+`--wake`; the microphone stays open while the listener is active, the window
+shows its state, and `Wake: off` releases it. “Hearty” is the wake word; the
+small model often spells it “hardy”, so both are accepted, along with “harty” and
+“heart y”.
+
+Whisper runs in a persistent local child process. That isolates CTranslate2 from
+the Vosk runtime and keeps both engines reliable on Windows systems with a small
+commit limit; `CT2_USE_MKL=0` avoids the native MKL allocation failure. The model
+is loaded with `local_files_only=True`. There is no cloud fallback, no telemetry,
+and no audio written to disk by the listener. See `docs/MODEL_POLICY.md` and
+`docs/SECURITY.md` for the model provenance and privacy boundary.
 
 The default speech output is a deterministic formant synthesizer implemented in
 this repository. It sounds robotic and has not been perceptually validated.
 Microsoft SAPI voices can be enabled only by editing configuration and setting
 `speech.allow_os_pretrained_tts: true`; there is no automatic fallback to SAPI.
-See `docs/MODEL_POLICY.md`.
 
 ## Local intent model
 
@@ -237,23 +267,29 @@ temporary `PA_HOME` roots; it does not use a real microphone, play audio, change
 the clipboard, launch applications, or capture screenshots without explicit
 consent. UI tests create a window and immediately withdraw it.
 
-Measured on 2026-10-27:
+Measured on 2026-10-28:
 
 ```text
 pytest tests -q
-110 passed, 1 skipped in 39.23s
+136 passed, 1 skipped
 ```
 
 The skip is symlink creation, which this Windows session did not permit; path
 policy still resolves links defensively. `--self-test` passed 15/15. Diagnostics
-passed required checks; the only expected warning is that no user voice templates
-are recorded. See `docs/ACCEPTANCE.md` for the recorded acceptance run.
+passed every check with 0 errors and 0 warnings using the installed Vosk model
+and enabled wake-word configuration. The synthetic wake-listener run detected
+“hearty”, captured the command, and dispatched `create a file test.txt` through
+the local Whisper worker. The GUI smoke test auto-started the wake listener and
+reported `wake: listening`. Real-microphone acoustic validation remains
+outstanding because ambient audio dominated the test captures; see
+`docs/ACCEPTANCE.md` for the detailed addendum.
 
 ## Packaging
 
 - `scripts/bundle.ps1` builds a portable source bundle with docs, tests, the
   from-scratch model, and synthetic training data, excluding personal runtime
-  data and voice recordings.
+  data, voice recordings, and the optional Vosk/Whisper models. Both model
+  installers are included; run them after setup if you want local general speech.
 - `scripts/package.ps1` builds optional PyInstaller executables. PyInstaller was
   **not installed** in the recorded environment, and Python 3.14 support was not
   assumed or verified. The script reports that honestly and exits with code 2
@@ -265,9 +301,10 @@ are recorded. See `docs/ACCEPTANCE.md` for the recorded acceptance run.
 ```text
 app/personal_assistant/   application package (core, tools, speech, memory, UI)
 config/                   reviewed example; local config.yaml is ignored
-scripts/                  setup, launch, diagnose, offline check, tests, bundle, package
+scripts/                  setup, launch, diagnose, offline check, tests, bundle, package,
+                          voice-template recording and Vosk/Whisper model installers
 training_data/generated/  synthetic intent-training splits and manifest
-models/                   locally trained intent model, metrics, evaluation, model card
+models/                   intent model/metrics plus locally installed Vosk/Whisper models (ignored)
 tests/                    unit, integration, security, offline, recovery, UI tests
 docs/                     architecture, security, policy, capability matrix, acceptance
 packaging/                optional PyInstaller spec and entry point

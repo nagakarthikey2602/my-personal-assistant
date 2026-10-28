@@ -13,12 +13,14 @@ import logging
 import threading
 import time
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 from typing import Any, Callable
 
 from ..config import Config
 from ..core.assistant import Assistant, AssistantResponse
 from ..core.permissions import ApprovalBridge, ApprovalRequest
+from ..speech.wake import WakeWordListener
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +47,8 @@ class AssistantWindow:
         self.recording = False
         self.closing = False
         self._speech_thread: threading.Thread | None = None
+        self.wake_listener: WakeWordListener | None = None
+        self._wake_restart_after_ptt = False
 
         self.root = tk.Tk()
         self.root.title(f"{APP_TITLE} — offline")
@@ -88,6 +92,8 @@ class AssistantWindow:
         )
         if self.config.get("app.ui.start_minimised"):
             self.root.after(200, self.root.iconify)
+        if self.config.get("speech.wake_word_enabled") and self._wake_allowed():
+            self.root.after(700, self._auto_start_wake)
 
     # Window construction -------------------------------------------------
     def _center(self) -> None:
@@ -138,7 +144,7 @@ class AssistantWindow:
         self.badge_frame = ttk.Frame(header)
         self.badge_frame.pack(side="right")
         self.badges: dict[str, ttk.Label] = {}
-        for key in ("offline", "safety", "memory", "model"):
+        for key in ("offline", "safety", "memory", "model", "wake"):
             label = ttk.Label(self.badge_frame, text="", style="Badge.TLabel")
             label.pack(side="left", padx=(5, 0))
             self.badges[key] = label
@@ -183,6 +189,8 @@ class AssistantWindow:
         buttons.pack(fill="x")
         self.voice_button = ttk.Button(buttons, text="🎙 Push to talk", command=self.push_to_talk)
         self.voice_button.pack(side="left")
+        self.wake_button = ttk.Button(buttons, text="🎧 Wake: off", command=self.toggle_wake)
+        self.wake_button.pack(side="left", padx=(6, 0))
         self.stop_button = ttk.Button(buttons, text="Stop", command=self.stop_current, state="disabled")
         self.stop_button.pack(side="left", padx=(6, 0))
         self.kill_button = ttk.Button(buttons, text="Kill switch", style="Danger.TButton", command=self.activate_kill_switch)
@@ -241,6 +249,8 @@ class AssistantWindow:
             return
         if command is None:
             self.entry.delete(0, "end")
+        if self.wake_listener is not None and self.wake_listener.running:
+            self.wake_listener.mute("Wake listener paused while a typed command runs.")
         self._append(text, "user")
         self._set_busy(True, "Working…")
         threading.Thread(target=self._run_text, args=(text,), daemon=True).start()
@@ -260,6 +270,10 @@ class AssistantWindow:
         if self.busy:
             self.status_var.set("Wait for the current action to finish, or press Stop.")
             return
+        if self.wake_listener is not None and self.wake_listener.running:
+            self._wake_restart_after_ptt = True
+            self.wake_listener.stop()
+            self._refresh_badges()
         self._append(
             "Recording push-to-talk audio. Speak one of your recorded phrases, then wait for the capture to end. "
             "Press Stop to end the recording early.",
@@ -279,10 +293,182 @@ class AssistantWindow:
             return
         self.root.after(0, lambda: self._complete(response))
 
+    # Wake word -----------------------------------------------------------
+    def _wake_allowed(self) -> bool:
+        if not bool(self.config.get("app.ui.voice_enabled", True)):
+            return False
+        candidate = Path(str(self.config.get("speech.vosk_model_dir", "")))
+        return (candidate / "am").is_dir()
+
+    def _auto_start_wake(self) -> None:
+        if self.closing:
+            return
+        if self.config.get("speech.wake_word_enabled") and self._wake_allowed():
+            self._start_wake(persist=False, announce=True)
+
+    def _ensure_wake_listener(self) -> WakeWordListener:
+        if self.wake_listener is None:
+            self._append("Loading the local Vosk voice model…", "system")
+            self.wake_listener = WakeWordListener(
+                self.config,
+                on_status=self._post_wake_status,
+                on_command=self._post_wake_command,
+            )
+        return self.wake_listener
+
+    def _post_wake_status(self, state: str, detail: str) -> None:
+        if self.closing:
+            return
+        try:
+            self.root.after(0, self._handle_wake_status, state, detail)
+        except tk.TclError:
+            pass
+
+    def _post_wake_command(self, text: str, confidence: float) -> None:
+        if self.closing:
+            return
+        try:
+            self.root.after(0, self._handle_wake_command, text, confidence)
+        except tk.TclError:
+            pass
+
+    def toggle_wake(self) -> None:
+        if self.wake_listener is not None and self.wake_listener.running:
+            self._stop_wake(persist=True)
+        else:
+            self._start_wake(persist=True)
+
+    def _start_wake(self, *, persist: bool = True, announce: bool = True) -> None:
+        if self.closing:
+            return
+        if not bool(self.config.get("app.ui.voice_enabled", True)):
+            self._append("Voice input is disabled in Settings.", "error")
+            return
+        if self.wake_listener is not None and self.wake_listener.running:
+            return
+        try:
+            listener = self._ensure_wake_listener()
+        except Exception as exc:
+            logger.exception("Could not create the wake-word listener")
+            self._append(f"Wake word could not start: {exc.__class__.__name__}: {exc}", "error")
+            self._refresh_badges()
+            return
+        ok, message = listener.start()
+        if not ok:
+            self._append(f"Wake word could not start: {message}", "error")
+            self._refresh_badges()
+            return
+        if persist:
+            try:
+                self.config.set("speech.wake_word_enabled", True)
+                self.config.save()
+            except Exception as exc:
+                logger.warning("Could not save wake-word setting: %s", exc)
+        if announce:
+            word = self.config.get("speech.wake_word", "hearty")
+            self._append(
+                f"Wake-word listening enabled. Say '{word}' followed by a command. "
+                "The microphone stays open until you click Wake: off.",
+                "system",
+            )
+        self._refresh_badges()
+
+    def _stop_wake(self, *, persist: bool = True, announce: bool = True) -> None:
+        if self.wake_listener is not None:
+            self.wake_listener.stop()
+        if persist:
+            try:
+                self.config.set("speech.wake_word_enabled", False)
+                self.config.save()
+            except Exception as exc:
+                logger.warning("Could not save wake-word setting: %s", exc)
+        if announce:
+            self._append("Wake-word listening stopped. The microphone is released.", "system")
+        self.activity_var.set("")
+        self._refresh_badges()
+
+    def _handle_wake_status(self, state: str, detail: str) -> None:
+        if self.closing:
+            return
+        word = self.config.get("speech.wake_word", "hearty")
+        if state == "listening":
+            self.activity_var.set(f"Listening for '{word}'.")
+        elif state == "awake":
+            self.status_var.set(detail)
+            self.activity_var.set("Wake word heard — listening for your command.")
+        elif state == "muted":
+            self.activity_var.set(detail)
+        elif state == "error":
+            self._append(f"Wake-word error: {detail}", "error")
+            self.status_var.set("Wake word unavailable. See the transcript.")
+            self.activity_var.set("")
+        elif state == "stopped":
+            self.activity_var.set("")
+        self._refresh_badges()
+
+    def _handle_wake_command(self, text: str, confidence: float) -> None:
+        if self.closing:
+            return
+        if self.busy:
+            self._append("Ignored a wake-word command because another action is running.", "system")
+            return
+        self._append(text, "user")
+        engine = str(self.config.get("speech.wake_command_engine", "whisper"))
+        label = "Whisper" if engine == "whisper" else "Vosk"
+        self._append(f"Heard by the local {label} model (confidence {confidence:.2f}).", "muted")
+        self._set_busy(True, "Working…")
+        threading.Thread(
+            target=self._run_voice_command,
+            args=(text, confidence),
+            daemon=True,
+        ).start()
+
+    def _run_voice_command(self, text: str, confidence: float) -> None:
+        try:
+            engine = str(self.config.get("speech.wake_command_engine", "whisper"))
+            response = self.assistant.handle_voice_command(
+                text,
+                speak=False,
+                confidence=confidence,
+                engine="whisper-offline" if engine == "whisper" else "vosk-offline",
+            )
+        except Exception as exc:
+            logger.exception("UI wake-word command failed")
+            self.root.after(0, lambda: self._complete_error(exc))
+            return
+        self.root.after(0, lambda: self._complete(response))
+
+    def _resume_wake(self) -> None:
+        if self.closing:
+            return
+        if self._wake_restart_after_ptt:
+            self._wake_restart_after_ptt = False
+            if self.config.get("speech.wake_word_enabled") and self._wake_allowed():
+                self._start_wake(persist=False, announce=False)
+            return
+        if self.wake_listener is not None and self.wake_listener.running and not self.busy:
+            self.wake_listener.resume()
+            self.activity_var.set(f"Listening for '{self.config.get('speech.wake_word', 'hearty')}'.")
+            self._refresh_badges()
+
+    def _reconfigure_wake(self) -> None:
+        """Stop and recreate the listener after settings or the speech engine change."""
+        if self.wake_listener is not None:
+            try:
+                self.wake_listener.stop()
+            except Exception:
+                logger.exception("Could not stop the old wake-word listener")
+            self.wake_listener = None
+        self._wake_restart_after_ptt = False
+        self._refresh_badges()
+        if self.config.get("speech.wake_word_enabled") and self._wake_allowed():
+            self._start_wake(persist=False, announce=False)
+
     def _complete_error(self, exc: Exception) -> None:
         self._set_busy(False, "Ready.")
         self._append(f"An unexpected local error occurred: {exc.__class__.__name__}. Details are in the log.", "error")
         self._refresh_badges()
+        self._resume_wake()
 
     def _complete(self, response: AssistantResponse) -> None:
         self.recording = False
@@ -292,7 +478,8 @@ class AssistantWindow:
         if response.details:
             self._append(" · ".join(response.details[:12]), "muted")
         self._refresh_badges()
-        self._maybe_speak(response)
+        if not self._maybe_speak(response):
+            self._resume_wake()
         if response.kind == "clarify":
             self.status_var.set("Nothing was run. Rephrase the command or type 'help'.")
         elif response.ok:
@@ -305,25 +492,30 @@ class AssistantWindow:
         except tk.TclError:
             pass
 
-    def _maybe_speak(self, response: AssistantResponse) -> None:
+    def _maybe_speak(self, response: AssistantResponse) -> bool:
         if not self.config.get("app.ui.spoken_responses", True):
-            return
+            return False
         if not self.config.get("app.ui.voice_enabled", True):
-            return
+            return False
         if str(self.config.get("speech.tts_engine", "formant")) == "none":
-            return
+            return False
         text = (response.spoken_text or response.text or "").strip()
         if not text:
-            return
+            return False
         self.activity_var.set("Speaking locally…")
 
         def speak() -> None:
-            ok, _message = self.assistant.speak(text)
-            if not self.closing:
-                self.root.after(0, lambda: self.activity_var.set("" if ok else "Speech output unavailable."))
+            ok = False
+            try:
+                ok, _message = self.assistant.speak(text)
+            finally:
+                if not self.closing:
+                    self.root.after(0, lambda: self.activity_var.set("" if ok else "Speech output unavailable."))
+                    self.root.after(0, self._resume_wake)
 
         self._speech_thread = threading.Thread(target=speak, daemon=True)
         self._speech_thread.start()
+        return True
 
     def _set_busy(self, busy: bool, message: str) -> None:
         self.busy = busy
@@ -338,6 +530,8 @@ class AssistantWindow:
 
     # Safety --------------------------------------------------------------
     def stop_current(self) -> None:
+        if self.wake_listener is not None and self.wake_listener.running:
+            self.wake_listener.mute("Wake listener paused after Stop.")
         count = self.assistant.cancel()
         self.bridge.resolve(False)
         self.recording = False
@@ -346,13 +540,17 @@ class AssistantWindow:
         self._refresh_badges()
 
     def activate_kill_switch(self) -> None:
+        if self.wake_listener is not None and self.wake_listener.running:
+            self.wake_listener.stop()
         self.assistant.halt()
         self.bridge.resolve(False)
         self._append(
-            "Kill switch activated. Running tasks were cancelled and new actions are blocked until Resume.",
+            "Kill switch activated. Running tasks were cancelled, wake-word listening was stopped, "
+            "and new actions are blocked until Resume.",
             "system",
         )
         self.status_var.set("Kill switch active. No new action will run.")
+        self.activity_var.set("")
         self._refresh_badges()
 
     def reset_kill_switch(self) -> None:
@@ -367,24 +565,43 @@ class AssistantWindow:
         halted = self.assistant.safety.halted
         memory_on = bool(self.config.get("memory.enabled", True)) and self.assistant.memory.enabled
         model_on = self.assistant.parser.model is not None
+        wake_state = "off"
+        if self.wake_listener is not None and self.wake_listener.running:
+            wake_state = {
+                "listening": "listening",
+                "awake": "awake",
+                "muted": "busy",
+            }.get(self.wake_listener.state, self.wake_listener.state)
         values = {
             "offline": f"offline: {self.config.get('app.offline_mode')}",
             "safety": "KILL SWITCH" if halted else "actions allowed",
             "memory": "memory on" if memory_on else "memory off",
             "model": "intent model" if model_on else "rules only",
+            "wake": f"wake: {wake_state}",
         }
         for key, text in values.items():
             label = self.badges.get(key)
             if label is not None:
                 label.configure(text=text)
+        wake_label = self.badges.get("wake")
+        if wake_label is not None:
+            wake_label.configure(
+                foreground=ACCENT if wake_state == "listening" else
+                WARN_COLOR if wake_state in {"awake", "busy"} else MUTED
+            )
         self.kill_button.configure(state="disabled" if halted else "normal")
         self.resume_button.configure(state="normal" if halted else "disabled")
         voice_allowed = (
             bool(self.config.get("app.ui.voice_enabled", True))
             and str(self.config.get("speech.asr_engine", "template")) != "none"
         )
+        wake_supported = self._wake_allowed()
         if not self.busy:
             self.voice_button.configure(state="normal" if voice_allowed else "disabled")
+        self.wake_button.configure(
+            state="normal" if wake_supported else "disabled",
+            text=f"🎧 Wake: {wake_state}" if wake_supported else "🎧 Wake: n/a",
+        )
 
     # Approval bridge -----------------------------------------------------
     def _approval_notifier(self, request: ApprovalRequest) -> None:
@@ -623,7 +840,8 @@ class AssistantWindow:
     def open_settings(self) -> None:
         window = tk.Toplevel(self.root)
         window.title("Assistant settings")
-        window.geometry("620x480")
+        window.geometry("620x600")
+        window.minsize(560, 520)
         window.configure(bg=BG)
         frame = ttk.Frame(window, padding=18)
         frame.pack(fill="both", expand=True)
@@ -643,6 +861,7 @@ class AssistantWindow:
         voice = tk.BooleanVar(value=bool(self.config.get("app.ui.voice_enabled", True)))
         tts = tk.StringVar(value=str(self.config.get("speech.tts_engine", "formant")))
         asr = tk.StringVar(value=str(self.config.get("speech.asr_engine", "template")))
+        wake = tk.BooleanVar(value=bool(self.config.get("speech.wake_word_enabled", False)))
         memory = tk.BooleanVar(value=bool(self.config.get("memory.enabled", True)))
 
         ttk.Checkbutton(frame, text="Speak assistant responses (local TTS)", variable=spoken).pack(anchor="w")
@@ -666,7 +885,30 @@ class AssistantWindow:
         ttk.Label(frame, text="Speech input engine").pack(anchor="w")
         ttk.Radiobutton(frame, text="User-recorded template matcher (closed vocabulary)", value="template",
                         variable=asr).pack(anchor="w", padx=12)
+        ttk.Radiobutton(frame, text="Vosk offline general speech (local pretrained model)", value="vosk",
+                        variable=asr).pack(anchor="w", padx=12)
+        ttk.Radiobutton(frame, text="Whisper offline general speech (local CTranslate2 model)", value="whisper",
+                        variable=asr).pack(anchor="w", padx=12)
         ttk.Radiobutton(frame, text="Disabled", value="none", variable=asr).pack(anchor="w", padx=12, pady=(0, 10))
+
+        ttk.Checkbutton(
+            frame,
+            text="Listen for wake word 'hearty' (microphone stays open while enabled)",
+            variable=wake,
+        ).pack(anchor="w", pady=(0, 4))
+        model_dir = str(self.config.get("speech.vosk_model_dir", ""))
+        whisper_dir = str(self.config.get("speech.whisper_model_dir", ""))
+        ttk.Label(
+            frame,
+            text=(
+                f"Vosk model (required for wake word): {model_dir}. "
+                "Whisper model: "
+                f"{whisper_dir}. If either is missing, run the matching install script once, then reopen Settings."
+            ),
+            style="Muted.TLabel",
+            wraplength=560,
+            justify="left",
+        ).pack(anchor="w", pady=(0, 10))
 
         source = self.config.source or (self.config.root / "config" / "config.yaml")
         ttk.Label(frame, text=f"Configuration file: {source}", style="Muted.TLabel", wraplength=560).pack(
@@ -678,17 +920,39 @@ class AssistantWindow:
                 new_tts = tts.get()
                 if new_tts == "sapi" and not self.config.get("speech.allow_os_pretrained_tts"):
                     raise ValueError("SAPI requires explicit model-policy acknowledgement in the config file.")
+                new_asr = asr.get()
+                if wake.get():
+                    wake_model = Path(str(self.config.get("speech.vosk_model_dir", "")))
+                    if not (wake_model / "am").exists():
+                        raise ValueError(
+                            f"Wake-word listening needs the Vosk model at {wake_model}. "
+                            "Run scripts/install_voice_model.py first."
+                        )
+                if new_asr == "vosk":
+                    candidate = Path(str(self.config.get("speech.vosk_model_dir", "")))
+                    if not (candidate / "am").exists():
+                        raise ValueError(
+                            f"Vosk model not found at {candidate}. Run scripts/install_voice_model.py first."
+                        )
+                if new_asr == "whisper":
+                    candidate = Path(str(self.config.get("speech.whisper_model_dir", "")))
+                    if not (candidate / "model.bin").exists():
+                        raise ValueError(
+                            f"Whisper model not found at {candidate}. Run scripts/install_whisper_model.py first."
+                        )
                 self.config.set("app.ui.spoken_responses", bool(spoken.get()))
                 self.config.set("app.ui.voice_enabled", bool(voice.get()))
                 self.config.set("memory.enabled", bool(memory.get()))
                 self.config.set("speech.tts_engine", new_tts)
-                self.config.set("speech.asr_engine", asr.get())
+                self.config.set("speech.asr_engine", new_asr)
+                self.config.set("speech.wake_word_enabled", bool(wake.get()))
                 if not memory.get():
                     self.assistant.memory.set_enabled(False)
                 else:
                     self.assistant.memory.set_enabled(True)
                 self.config.save()
                 self.assistant.reload_speech()
+                self._reconfigure_wake()
                 self._refresh_badges()
                 self._append(f"Settings saved to {self.config.source}.", "system")
                 window.destroy()
@@ -770,6 +1034,11 @@ class AssistantWindow:
             ):
                 return
         self.closing = True
+        try:
+            if self.wake_listener is not None:
+                self.wake_listener.stop()
+        except Exception:
+            logger.exception("Wake-word listener shutdown failed")
         try:
             self.bridge.resolve(False)
         except Exception:

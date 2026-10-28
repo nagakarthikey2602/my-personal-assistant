@@ -295,12 +295,30 @@ examples.
 
 ## Voice and audio privacy
 
-- The microphone is opened only for explicit push-to-talk in the GUI/console or
-  for an explicitly started template-recording script. There is no wake word,
-  always-listening mode, or background capture.
-- Audio is processed locally. Template recording stores MFCC features and a
-  manifest under `<APP_ROOT>\models\speech_templates`, not raw audio, according
-  to the current script. Treat the features and phrase text as personal data.
+- The microphone opens only for explicit push-to-talk, `--voice`, the opt-in
+  wake listener, or an explicitly started template-recording script. The wake
+  listener is off by default in the reviewed example; when enabled it keeps the
+  microphone open until `Wake: off`, `--wake` exits, or the kill switch stops it.
+  A status badge and activity line show the listener state.
+- Audio is processed locally and in memory. Template recording stores MFCC
+  features and a manifest under `<APP_ROOT>\models\speech_templates`, not raw
+  audio, according to the current script. The wake listener, Vosk, and Whisper
+  recognition do not write captured audio to disk. Treat any saved features and
+  phrase text as personal data.
+- Wake detection and fallback recognition use Vosk and the
+  `vosk-model-small-en-us-0.15` Kaldi model, both Apache-2.0. The model is
+  downloaded once by the owner through `scripts/install_voice_model.py` and then
+  loaded from `models/vosk`. The running assistant never downloads it, never
+  sends audio to a cloud service, and fails closed if the package or model is
+  missing. The native Vosk library is outside the Python socket guard, but the
+  application does not give it a network path or a cloud fallback.
+- General wake commands use faster-whisper, CTranslate2, and OpenAI's `tiny.en`
+  Whisper weights (MIT). The model is downloaded once by the owner through
+  `scripts/install_whisper_model.py`, loaded from `models/whisper` with
+  `local_files_only=True`, and run in a persistent local child process. Only raw
+  PCM crosses the local pipe to that process; it is not written to disk or sent
+  over a network. If the worker is unavailable, recognition falls back to local
+  Vosk, never to a cloud service.
 - The default formant TTS is deterministic and local. It sounds robotic; this
   is a quality limitation, not a privacy claim.
 - SAPI is a Microsoft-pretrained OS voice. It is disabled by default and

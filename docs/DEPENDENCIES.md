@@ -30,6 +30,22 @@ These are declared in `requirements.txt` and pinned exactly in
 | `PyYAML` | 6.0.3 | Configuration parsing | Local YAML only; `safe_load` is used |
 | `pypdf` | 6.21.2 | PDF text extraction | Read-only document support |
 | `Pillow` | 13.0.0 | Screenshot capture, PNG validation | Local screenshot support |
+| `vosk` | 0.3.45 | Optional offline wake-word detection and fallback command recognition | Apache-2.0 local Kaldi runtime; model is a separate one-time download |
+| `faster-whisper` | 1.2.1 | Optional offline general command recognition after the wake word | MIT wrapper around OpenAI's MIT Whisper model through Apache-2.0 CTranslate2; model and worker run locally |
+
+Vosk installs transitive packages (`cffi`, `requests`, `srt`, `tqdm`,
+`websockets`, and their dependencies) on this interpreter. The application uses
+Vosk's local recognizer only; it does not start a server or use those packages for
+cloud calls. Vosk models are **not** Python packages: install
+`vosk-model-small-en-us-0.15` separately with
+`scripts/install_voice_model.py`.
+
+faster-whisper adds `ctranslate2`, `av`, `huggingface_hub`, `tokenizers`,
+`onnxruntime`, and their transitive set. The running assistant imports the local
+model from `models/whisper` with `local_files_only=True`; it never downloads
+weights. `ctranslate2` runs in a persistent local child process so its native
+runtime stays isolated from Vosk. On constrained Windows systems it is configured
+with `CT2_USE_MKL=0`; see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 The intended dependency set is deliberately small. The UI uses Tkinter (stdlib)
 and audio uses WinMM (stdlib `ctypes`) rather than PySide6 and sounddevice. On
@@ -82,9 +98,10 @@ The repository does **not** depend on or bundle:
 
 - PySide6, PyQt, or a downloaded GUI runtime;
 - sounddevice/PortAudio or a downloaded audio library;
-- requests, httpx, Flask, FastAPI, websockets, or a remote server framework;
-- an LLM SDK, embeddings package, speech-recognition package, or TTS cloud SDK;
-- an automatic updater or telemetry client;
+- a remote server framework (Flask, FastAPI, or similar); `requests` and
+  `websockets` are present only as transitive Vosk dependencies;
+- an LLM SDK, embeddings package, or TTS cloud SDK;
+- an automatic updater, telemetry client, or runtime model downloader;
 - Playwright/Selenium browser binaries or a downloaded browser;
 - PyInstaller in the recorded environment.
 
@@ -105,6 +122,22 @@ Setup creates/uses `.venv`, installs requirements, copies
 `config/config.example.yaml` to `config/config.yaml` unless `-NoConfig` is
 given, creates the runtime directories, and runs a compile check. `-Dev` adds
 pytest/PyInstaller; without it, only runtime requirements are installed.
+
+The optional speech models are separate one-time downloads, never fetched by the
+running assistant:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\install_voice_model.py
+.\.venv\Scripts\python.exe .\scripts\install_voice_model.py --check
+.\.venv\Scripts\python.exe .\scripts\install_whisper_model.py
+.\.venv\Scripts\python.exe .\scripts\install_whisper_model.py --check
+```
+
+Then set `speech.asr_engine` to `vosk` or `whisper`. Wake detection always uses
+Vosk; `speech.wake_command_engine: whisper` (the installed default) uses the local
+Whisper worker for more accurate wake commands. For hands-free use, also set
+`speech.wake_word_enabled: true` and use a microphone you are comfortable leaving
+open while the listener is active.
 
 ### Offline wheelhouse
 
@@ -146,9 +179,10 @@ For a high-assurance install, add hashes and verify the wheel source.
 
 Diagnostics check the platform, Python, each package's importability/version,
 Tkinter, runtime directories, sandbox write, packaged data files, audio devices,
-the intent model, voice templates, the tool registry, offline guard installation,
-and loopback sockets. Missing voice templates are a warning; a missing runtime
-dependency is an error.
+the intent model, the configured speech engines (templates, Vosk, and/or
+Whisper), wake-word configuration, the tool registry, offline guard installation,
+and loopback sockets. A missing optional model or voice templates is a warning; a
+missing runtime dependency is an error.
 
 ## Updating dependencies
 
@@ -172,6 +206,8 @@ The project itself is MIT (see `LICENSE`). Third-party packages retain their own
 licenses; the recorded metadata reports NumPy under a BSD-3-Clause/0BSD/MIT/
 Zlib/CC0 combination, psutil and pypdf under BSD-3-Clause, PyYAML under MIT,
 Pillow under MIT-CMU, pytest/pluggy/iniconfig under MIT, packaging under
-Apache-2.0 or BSD-2-Clause, Pygments under BSD-2-Clause, and colorama under its
-own license. Consult the installed package metadata and upstream texts before
-redistributing a frozen build; this summary is not legal advice.
+Apache-2.0 or BSD-2-Clause, Pygments under BSD-2-Clause, colorama under its own
+license, Vosk/the small English model under Apache-2.0, faster-whisper and the
+Whisper model under MIT, and CTranslate2/ONNX Runtime/`av` under their respective
+upstream licenses. Consult the installed package metadata and upstream texts
+before redistributing a frozen build; this summary is not legal advice.

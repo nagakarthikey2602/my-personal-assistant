@@ -113,8 +113,27 @@ def test_builtin_help_status_and_capabilities(make_assistant, workspace: Path) -
 
     capabilities = assistant.handle_command("capabilities")
     assert capabilities.kind == "builtin" and capabilities.ok
-    assert "closed-vocabulary" in capabilities.text
+    assert "local Vosk model" in capabilities.text
+    assert "Wake-word listening is opt-in" in capabilities.text
     assert "No cloud AI" in capabilities.text
+
+
+def test_voice_transcript_uses_the_normal_command_path(make_assistant, workspace: Path) -> None:
+    assistant, _ = _assistant(make_assistant, workspace)
+
+    response = assistant.handle_voice_command(
+        "status",
+        confidence=0.91,
+        engine="vosk-offline",
+    )
+
+    assert response.ok
+    assert "Offline mode: strict" in response.text
+    assert response.details[0] == "Voice transcript: status"
+
+    empty = assistant.handle_voice_command("   ")
+    assert empty.kind == "clarify"
+    assert empty.outcome is None
 
 
 def test_unknown_command_runs_nothing(make_assistant, workspace: Path) -> None:

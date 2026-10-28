@@ -12,7 +12,7 @@ from ..core.results import ToolResult
 def register(registry) -> None:  # type: ignore[no-untyped-def]
     registry.register(ToolSpec(
         name="voice.status",
-        description="Report microphone/speaker devices, ASR template availability, and TTS backend.",
+        description="Report microphone/speaker devices, ASR availability, and TTS backend.",
         risk=RiskLevel.READ_ONLY,
         category="voice",
         schema=object_schema({}),
@@ -96,25 +96,31 @@ def _capabilities(ctx: ToolContext, args: dict[str, Any]) -> ToolResult:
 
     return ToolResult.success(
         "voice.capabilities",
-        "Push-to-talk voice input is implemented with a closed-vocabulary, user-trained recognizer. "
-        "Arbitrary speech dictation and wake-word listening are not implemented.",
+        "Push-to-talk voice input is implemented with either user-trained phrase templates or an optional "
+        "local Vosk or Whisper model for general English. Wake-word listening is opt-in, local, and visible "
+        "while active.",
         data={
             "implemented": [
                 "microphone/speaker discovery via WinMM",
                 "push-to-talk capture",
                 "energy VAD and recording quality checks",
                 "user-recorded MFCC/DTW phrase recognition",
+                "optional local Vosk general English recognition",
+                "optional local faster-whisper command recognition",
+                "opt-in local wake-word listening ('hearty')",
                 "rule-based formant speech output",
                 "optional policy-gated Windows SAPI voices",
             ],
             "not_implemented": [
-                "general dictation",
-                "always-listening wake word",
                 "speaker diarization",
-                "pretrained or downloaded speech models",
                 "cloud STT/TTS",
+                "automatic model downloads during runtime",
+                "custom acoustic-model training for a new wake word",
             ],
             "devices": audio_status(),
-            "policy": "AI models must be user-trained or from scratch; OS voices are explicit opt-in.",
+            "policy": (
+                "All speech processing is local. The optional Vosk and Whisper models are one-time, "
+                "explicit downloads; there is no cloud fallback. OS voices are explicit opt-in."
+            ),
         },
     )

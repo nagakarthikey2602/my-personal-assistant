@@ -3,9 +3,12 @@
     Create or refresh the local Python environment for the assistant.
 
 .DESCRIPTION
-    This is the only script that may need network access (when pip must download
-    packages). The assistant itself has no runtime download path. Pass -Offline
-    with a local wheelhouse to install without network access.
+    This script may use the network when pip must download packages. The
+    assistant itself has no runtime download path. The optional Vosk and Whisper
+    speech models are separate, explicit downloads via
+    scripts/install_voice_model.py and scripts/install_whisper_model.py.
+    Pass -Offline with a local wheelhouse to install packages without network
+    access.
 
 .PARAMETER Python
     Base Python executable or command to use for the virtual environment.
@@ -122,3 +125,16 @@ Write-Host "Setup complete. Launch with:"
 Write-Host "  powershell -ExecutionPolicy Bypass -File .\scripts\launch.ps1"
 Write-Host "Or diagnose with:"
 Write-Host "  powershell -ExecutionPolicy Bypass -File .\scripts\diagnose.ps1"
+$VoskModel = Join-Path $Root "models\vosk\vosk-model-small-en-us-0.15\am"
+if (-not (Test-Path $VoskModel)) {
+    Write-Host ""
+    Write-Host "Optional local wake word and fallback speech:"
+    Write-Host "  .venv\Scripts\python.exe .\scripts\install_voice_model.py"
+}
+$WhisperModel = Join-Path $Root "models\whisper\faster-whisper-tiny.en\model.bin"
+if (-not (Test-Path $WhisperModel)) {
+    Write-Host ""
+    Write-Host "Optional local Whisper command recognition:"
+    Write-Host "  .venv\Scripts\python.exe .\scripts\install_whisper_model.py"
+}
+Write-Host "Then choose speech.asr_engine: vosk or whisper in config/config.yaml."

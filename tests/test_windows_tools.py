@@ -142,6 +142,7 @@ def test_type_text_risk_recognises_notepad(monkeypatch) -> None:
     from personal_assistant.tools import applications
 
     monkeypatch.setattr(applications, "enumerate_windows", lambda: [])
+    monkeypatch.setattr(applications.user32, "GetForegroundWindow", lambda: None)
     assert applications._type_risk({"text": "hello", "window_title": "Untitled - Notepad"}) == 2
     assert applications._type_risk({"text": "hello", "window_title": "Bank portal"}) == 3
 

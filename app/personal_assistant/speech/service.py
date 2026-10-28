@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import threading
 from typing import Any
 
@@ -10,6 +11,10 @@ from .native_audio import AudioError, audio_status, record_audio
 from .template_asr import TemplateASR, Transcription
 from .tts import SpeechOutput
 from .vad import quality_summary, trim_silence
+from .vosk_asr import VoskASR
+from .whisper_asr import WhisperASR
+
+logger = logging.getLogger(__name__)
 
 
 class SpeechService:
@@ -21,7 +26,7 @@ class SpeechService:
         self._record_stop: threading.Event | None = None
         self._record_lock = threading.Lock()
         engine = str(config.get("speech.asr_engine", "template"))
-        self.asr: TemplateASR | None = None
+        self.asr: TemplateASR | VoskASR | WhisperASR | None = None
         if engine == "template":
             self.asr = TemplateASR(
                 config.path("speech.templates_dir"),
@@ -29,6 +34,22 @@ class SpeechService:
                 threshold=float(config.get("speech.template_threshold", 0.62)),
                 margin=float(config.get("speech.template_margin", 0.04)),
                 vad_threshold=float(config.get("speech.vad_energy_threshold", 0.008)),
+            )
+        elif engine == "vosk":
+            self.asr = VoskASR(
+                config.path("speech.vosk_model_dir"),
+                sample_rate=self.sample_rate,
+                language=str(config.get("speech.vosk_language", "en-us")),
+            )
+        elif engine == "whisper":
+            self.asr = WhisperASR(
+                config.path("speech.whisper_model_dir"),
+                sample_rate=self.sample_rate,
+                language=str(config.get("speech.whisper_language", "en")),
+                compute_type=str(config.get("speech.whisper_compute_type", "int8")),
+                cpu_threads=int(config.get("speech.whisper_cpu_threads", 4)),
+                beam_size=int(config.get("speech.whisper_beam_size", 5)),
+                initial_prompt=str(config.get("speech.whisper_initial_prompt") or ""),
             )
         self.tts = SpeechOutput(config)
 
@@ -45,12 +66,19 @@ class SpeechService:
             "output_device": self.output_device,
             "wake_word": {
                 "enabled": bool(self.config.get("speech.wake_word_enabled")),
-                "implemented": False,
-                "reason": "Always-listening wake word is intentionally not implemented in this milestone.",
+                "implemented": True,
+                "word": str(self.config.get("speech.wake_word", "hearty")),
+                "aliases": self.config.get("speech.wake_word_aliases", []),
+                "reason": (
+                    "Opt-in local wake-word listening. The microphone stays open only while "
+                    "the listener is enabled; no audio leaves this PC."
+                ),
             },
             "limitations": [
-                "Template ASR recognizes only phrases recorded by the user; it is not general dictation.",
-                "No microphone recording happens without an explicit push-to-talk action.",
+                "Template ASR recognizes only phrases recorded by the user; Vosk and Whisper recognize general English locally.",
+                "Wake-word listening is opt-in and keeps the microphone open while it is active.",
+                "Vosk uses a pretrained Kaldi model stored locally; Whisper uses a local CTranslate2 model. Neither calls a cloud service.",
+                "No microphone recording happens without push-to-talk or an explicitly enabled wake-word listener.",
                 "Formant TTS is robotic and has not been perceptually validated.",
                 "OS pretrained voices are opt-in only and disabled by default under the model policy.",
             ],
@@ -89,7 +117,7 @@ class SpeechService:
             return Transcription("", 0.0, available=True, reason=vad.reason)
         transcription = self.asr.recognize(vad.trimmed, rate)
         if transcription.text:
-            transcription.reason = quality_summary(vad)
+            transcription.reason = f"{transcription.reason} {quality_summary(vad)}".strip()
         return transcription
 
     def speak(self, text: str, stop_event: threading.Event | None = None) -> None:
@@ -101,3 +129,8 @@ class SpeechService:
     def stop_all(self) -> None:
         self.stop_recording()
         self.stop_speaking()
+        if self.asr is not None and hasattr(self.asr, "close"):
+            try:
+                self.asr.close()
+            except Exception:
+                logger.debug("Could not stop the local speech recognizer", exc_info=True)

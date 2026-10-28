@@ -89,6 +89,11 @@ try {
     if (Test-Path (Join-Path $Root "README.md")) {
         Copy-Item -LiteralPath (Join-Path $Root "README.md") -Destination (Join-Path $Output "README.md") -Force
     }
+    $VoiceScriptDir = Join-Path $Output "scripts"
+    New-Item -ItemType Directory -Force -Path $VoiceScriptDir | Out-Null
+    if (Test-Path (Join-Path $Root "scripts\install_voice_model.py")) {
+        Copy-Item -LiteralPath (Join-Path $Root "scripts\install_voice_model.py") -Destination (Join-Path $VoiceScriptDir "install_voice_model.py") -Force
+    }
 
     $PortableNote = @"
 Local Personal Assistant — packaged build
@@ -103,6 +108,17 @@ files, and the intent model when retrained) is stored under:
 The bundled intent model is copied into the per-user data directory on first
 run if no user-trained model exists. It is a small from-scratch classifier and
 is used only as a label suggestion; it never executes actions.
+
+The optional Vosk and Whisper speech models are not bundled. To use local
+general speech or the 'hearty' wake word, install them once from a source
+checkout or with a Python interpreter:
+  python scripts\install_voice_model.py
+  python scripts\install_whisper_model.py
+Then choose speech.asr_engine: vosk or whisper in config\config.yaml. Wake
+detection always uses Vosk; wake_command_engine: whisper is the default command
+recognizer. No model is downloaded by the running assistant, and audio never
+leaves this PC.
+
 No personal data is included in this build. The application is offline-first;
 the Python network guard covers Python sockets only, not child processes or
 native libraries. See docs\SECURITY.md and docs\CAPABILITIES.md.

@@ -1,7 +1,9 @@
 """Windows WinMM audio capture and playback using ctypes (no PortAudio/cffi).
 
-Recording is only started when the user explicitly invokes push-to-talk. There is
-no always-listening background capture in this build.
+Push-to-talk records a bounded clip. The optional wake-word listener uses the
+same WinMM backend through :class:`MicrophoneStream`; it only runs after the user
+explicitly enables wake-word listening, and a visible status indicator remains on
+while the microphone is open.
 """
 
 from __future__ import annotations
@@ -19,12 +21,23 @@ import numpy as np
 WAVE_MAPPER = ctypes.c_uint(-1).value
 WAVE_FORMAT_PCM = 1
 CALLBACK_NULL = 0
+CALLBACK_EVENT = 0x00050000
 WHDR_DONE = 0x00000001
 WHDR_PREPARED = 0x00000002
 MMSYSERR_NOERROR = 0
 MAXPNAMELEN = 32
+WAIT_OBJECT_0 = 0
+WAIT_TIMEOUT = 258
 
 winmm = ctypes.WinDLL("winmm", use_last_error=True)
+kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+
+kernel32.CreateEventW.argtypes = (ctypes.c_void_p, wintypes.BOOL, wintypes.BOOL, wintypes.LPCWSTR)
+kernel32.CreateEventW.restype = wintypes.HANDLE
+kernel32.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
+kernel32.WaitForSingleObject.restype = wintypes.DWORD
+kernel32.CloseHandle.argtypes = (wintypes.HANDLE,)
+kernel32.CloseHandle.restype = wintypes.BOOL
 
 
 class WAVEFORMATEX(ctypes.Structure):
@@ -291,6 +304,191 @@ def resample(samples: np.ndarray, source_rate: int, target_rate: int) -> np.ndar
     source_positions = np.linspace(0.0, samples.size - 1, num=samples.size, dtype=np.float64)
     target_positions = np.linspace(0.0, samples.size - 1, num=target_count, dtype=np.float64)
     return np.interp(target_positions, source_positions, samples).astype(np.float32)
+
+
+class MicrophoneStream:
+    """Continuous mono PCM16 capture for the opt-in wake-word listener.
+
+    WinMM signals a manual event when a buffer is full. The reader thread re-adds
+    completed buffers, so capture continues without closing the device between
+    chunks. The class does not start automatically: the caller must explicitly
+    construct it after the user enables wake-word listening.
+    """
+
+    def __init__(
+        self,
+        sample_rate: int = 16000,
+        device_index: int | None = None,
+        *,
+        chunk_ms: int = 200,
+        buffer_count: int = 4,
+    ) -> None:
+        if not 8000 <= int(sample_rate) <= 48000:
+            raise AudioError("MicrophoneStream sample rate must be between 8000 and 48000 Hz.")
+        if not 50 <= int(chunk_ms) <= 1000:
+            raise AudioError("MicrophoneStream chunk_ms must be between 50 and 1000.")
+        if not 2 <= int(buffer_count) <= 16:
+            raise AudioError("MicrophoneStream buffer_count must be between 2 and 16.")
+        self.sample_rate = int(sample_rate)
+        self.device_index = device_index
+        self.chunk_ms = int(chunk_ms)
+        self.buffer_count = int(buffer_count)
+        self.capture_rate = self.sample_rate
+        self._handle = ctypes.c_void_p()
+        self._event: int | None = None
+        self._buffers: list[tuple[Any, WAVEHDR, bool]] = []
+        self._lock = threading.RLock()
+        self._closed = False
+        self._open()
+
+    def _open(self) -> None:
+        errors: list[str] = []
+        rates = [self.sample_rate]
+        for fallback in (44100, 48000):
+            if fallback not in rates:
+                rates.append(fallback)
+        for rate in rates:
+            try:
+                self._open_at_rate(rate)
+                self.capture_rate = rate
+                return
+            except AudioError as exc:
+                errors.append(str(exc))
+                self._cleanup()
+        raise AudioError("Could not open the microphone stream. " + " | ".join(errors[-2:]))
+
+    def _open_at_rate(self, rate: int) -> None:
+        fmt = _wave_format(rate)
+        event = kernel32.CreateEventW(None, False, False, None)
+        if not event:
+            raise AudioError("Could not create the WinMM capture event.")
+        self._event = int(event)
+        handle = ctypes.c_void_p()
+        result = winmm.waveInOpen(
+            ctypes.byref(handle),
+            _device_id(self.device_index, output=False),
+            ctypes.byref(fmt),
+            ctypes.c_void_p(self._event),
+            0,
+            CALLBACK_EVENT,
+        )
+        if result != MMSYSERR_NOERROR:
+            raise _mm_error(result, f"waveInOpen (stream) at {rate} Hz")
+        self._handle = handle
+        chunk_bytes = max(2, int(rate * 2 * self.chunk_ms / 1000))
+        chunk_bytes -= chunk_bytes % 2
+        for _ in range(self.buffer_count):
+            buffer = (ctypes.c_char * chunk_bytes)()
+            header = WAVEHDR(
+                lpData=ctypes.cast(buffer, ctypes.c_void_p),
+                dwBufferLength=chunk_bytes,
+                dwBytesRecorded=0,
+                dwUser=0,
+                dwFlags=0,
+                dwLoops=1,
+                lpNext=None,
+                reserved=0,
+            )
+            result = winmm.waveInPrepareHeader(self._handle, ctypes.byref(header), ctypes.sizeof(header))
+            if result != MMSYSERR_NOERROR:
+                raise _mm_error(result, "waveInPrepareHeader (stream)")
+            result = winmm.waveInAddBuffer(self._handle, ctypes.byref(header), ctypes.sizeof(header))
+            if result != MMSYSERR_NOERROR:
+                winmm.waveInUnprepareHeader(self._handle, ctypes.byref(header), ctypes.sizeof(header))
+                raise _mm_error(result, "waveInAddBuffer (stream)")
+            self._buffers.append((buffer, header, True))
+        result = winmm.waveInStart(self._handle)
+        if result != MMSYSERR_NOERROR:
+            raise _mm_error(result, "waveInStart (stream)")
+
+    @property
+    def is_open(self) -> bool:
+        with self._lock:
+            return bool(self._handle) and not self._closed
+
+    def read(self, timeout: float = 0.5) -> bytes:
+        """Return available PCM16 mono bytes, resampled to ``sample_rate``.
+
+        An empty result means the timeout expired without a completed buffer.
+        """
+        deadline = time.monotonic() + max(0.0, float(timeout))
+        with self._lock:
+            if self._closed or not self._handle or self._event is None:
+                return b""
+            remaining = max(0, int((deadline - time.monotonic()) * 1000))
+            result = kernel32.WaitForSingleObject(self._event, remaining)
+            if result == WAIT_TIMEOUT:
+                return b""
+            if result != WAIT_OBJECT_0:
+                raise AudioError(f"Waiting for microphone data failed (code {result}).")
+            chunks: list[bytes] = []
+            for buffer, header, _prepared in self._buffers:
+                if not (header.dwFlags & WHDR_DONE):
+                    continue
+                recorded = int(header.dwBytesRecorded)
+                if recorded > 0:
+                    chunks.append(bytes(buffer[: min(recorded, int(header.dwBufferLength))]))
+                header.dwFlags = header.dwFlags & ~WHDR_DONE
+                header.dwBytesRecorded = 0
+                added = winmm.waveInAddBuffer(self._handle, ctypes.byref(header), ctypes.sizeof(header))
+                if added != MMSYSERR_NOERROR:
+                    raise _mm_error(added, "waveInAddBuffer (stream refill)")
+            raw = b"".join(chunks)
+            if not raw or self.capture_rate == self.sample_rate:
+                return raw
+            samples = np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+            samples = resample(samples, self.capture_rate, self.sample_rate)
+            pcm = (np.clip(samples, -1.0, 1.0) * 32767.0).astype("<i2").tobytes()
+            return pcm
+
+    def close(self) -> None:
+        with self._lock:
+            if self._closed:
+                return
+            self._closed = True
+            self._cleanup()
+
+    def _cleanup(self) -> None:
+        if self._handle:
+            try:
+                winmm.waveInStop(self._handle)
+            except Exception:
+                pass
+            try:
+                winmm.waveInReset(self._handle)
+            except Exception:
+                pass
+        for _buffer, header, prepared in self._buffers:
+            if prepared:
+                try:
+                    winmm.waveInUnprepareHeader(self._handle, ctypes.byref(header), ctypes.sizeof(header))
+                except Exception:
+                    pass
+        if self._handle:
+            try:
+                winmm.waveInClose(self._handle)
+            except Exception:
+                pass
+        if self._event is not None:
+            try:
+                kernel32.CloseHandle(self._event)
+            except Exception:
+                pass
+        self._buffers = []
+        self._handle = ctypes.c_void_p()
+        self._event = None
+
+    def __enter__(self) -> "MicrophoneStream":
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
+        self.close()
+
+    def __del__(self) -> None:
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
 def save_wav(path: Path, samples: np.ndarray, sample_rate: int = 16000) -> Path:

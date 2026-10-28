@@ -138,15 +138,35 @@ selected records. There is no encryption at rest; see `SECURITY.md`.
 `SpeechService` is lazy and uses:
 
 - `speech/native_audio.py`: WinMM waveIn/waveOut through `ctypes`, device
-  enumeration, recording, and WAV playback. No background capture.
+  enumeration, bounded push-to-talk recording, WAV playback, and
+  `MicrophoneStream` for the opt-in wake listener.
 - `speech/vad.py`: energy-based speech detection and trimming.
 - `speech/template_asr.py`: MFCC extraction plus dynamic time warping against
   user-recorded word/phrase templates. Closed vocabulary; no pretrained weights.
+- `speech/vosk_asr.py`: optional local Vosk/Kaldi model loaded from
+  `models/vosk`; grammar-constrained wake detection and the fallback command
+  recognizer, with no cloud fallback.
+- `speech/whisper_asr.py`: optional local faster-whisper/CTranslate2 model loaded
+  from `models/whisper` for general wake commands. It runs in a persistent local
+  child process so Vosk's OpenMP/MKL runtime and CTranslate2's runtime cannot
+  conflict in one process; only raw PCM crosses the local pipe.
+- `speech/voice_text.py`: conservative spoken-punctuation normalisation,
+  polite-prefix removal, and wake-word splitting/aliases.
+- `speech/wake.py`: opt-in wake listener. It opens one continuous microphone
+  stream, watches for “hearty” (plus aliases such as “hardy”), captures one
+  command, and pauses while actions or TTS run to avoid feedback. Wake detection
+  uses a constrained Vosk grammar; commands beyond that grammar are sent to the
+  local Whisper worker (or Vosk when Whisper is unavailable).
+- Vosk models are loaded once per process and shared by wake detection and
+  push-to-talk; each active stream still gets its own recognizer. This avoids
+  loading two ~437 MB model copies on a small Windows commit limit.
 - `speech/tts.py`: deterministic formant synthesis. SAPI is an opt-in,
   policy-gated backend and is never selected as a fallback.
 
-The GUI and console route all speech through the same service. Recording only
-starts after an explicit push-to-talk or voice-loop action.
+The GUI and console route all speech through the same service. Recording starts
+only after an explicit push-to-talk action, `--voice`, or an explicitly enabled
+wake listener. The wake listener's status is visible, and stopping it closes the
+microphone stream.
 
 ## Intelligence
 
@@ -158,12 +178,13 @@ vocabulary, weights, and metadata; no pretrained language model is used.
 
 ## UI
 
-The Tkinter window (`ui/app.py`) contains a transcript, command entry, voice and
-safety buttons, status badges, memory inspector, settings dialog, tool catalog,
-and approval dialog. It never calls a tool directly: commands go through
-`Assistant.handle_command`, and the approval callback is the shared
-`ApprovalBridge`. Long actions run in worker threads; UI updates are scheduled
-back onto the Tk main thread. The UI is intentionally not a second policy layer.
+The Tkinter window (`ui/app.py`) contains a transcript, command entry, voice,
+wake-word, and safety buttons, status badges, memory inspector, settings dialog,
+tool catalog, and approval dialog. It never calls a tool directly: commands go
+through `Assistant.handle_command` or `Assistant.handle_voice_command`, and the
+approval callback is the shared `ApprovalBridge`. Long actions run in worker
+threads; UI updates are scheduled back onto the Tk main thread. The UI is
+intentionally not a second policy layer.
 
 ## Offline guard
 
@@ -188,5 +209,6 @@ temporary homes and never touch the owner's runtime data by default.
 
 This milestone does not implement cloud AI, telemetry, arbitrary shell access,
 full UI Automation, browser form automation, OS settings changes, permanent
-delete, always-listening voice, general dictation, remote control, or an Android
-server. See `CAPABILITIES.md` and `ROADMAP.md`.
+delete, cloud speech, custom wake-word acoustic training, speaker diarization,
+remote control, or an Android server. Hands-free local listening is opt-in and
+visible while active. See `CAPABILITIES.md` and `ROADMAP.md`.
