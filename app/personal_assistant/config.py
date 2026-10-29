@@ -32,7 +32,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "max_steps": 40,
         "log_level": "INFO",
         "ui": {
-            "spoken_responses": True,
+            "spoken_responses": False,
             "voice_enabled": True,
             "start_minimised": False,
         },

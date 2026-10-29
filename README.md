@@ -218,10 +218,13 @@ is loaded with `local_files_only=True`. There is no cloud fallback, no telemetry
 and no audio written to disk by the listener. See `docs/MODEL_POLICY.md` and
 `docs/SECURITY.md` for the model provenance and privacy boundary.
 
-The default speech output is a deterministic formant synthesizer implemented in
-this repository. It sounds robotic and has not been perceptually validated.
-Microsoft SAPI voices can be enabled only by editing configuration and setting
-`speech.allow_os_pretrained_tts: true`; there is no automatic fallback to SAPI.
+The default speech output engine is a deterministic formant synthesizer
+implemented in this repository. It sounds robotic and has not been perceptually
+validated, so spoken replies are off by default (`app.ui.spoken_responses:
+false`); enable them in Settings only if you want the assistant to speak after
+each task. Microsoft SAPI voices can be enabled only by editing configuration and
+setting `speech.allow_os_pretrained_tts: true`; there is no automatic fallback to
+SAPI.
 
 ## Local intent model
 

@@ -15,7 +15,9 @@ app:
   max_steps: 40
   log_level: INFO
   ui:
-    spoken_responses: true
+    # Spoken replies are off by default. Enable this only if you want the local
+    # TTS engine to speak assistant responses after each task.
+    spoken_responses: false
     voice_enabled: true
     start_minimised: false
 
